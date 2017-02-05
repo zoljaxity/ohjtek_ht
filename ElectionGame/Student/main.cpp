@@ -3,7 +3,11 @@
 // TIE-02400 Ohjelmoinnin tekniikat, kevät 2017, harjoitustyö             //
 // Ryhmärämä - Lauri Solja & Elena Lassila                                //
 //                                                                        //
-// ---Valtaistuinpeli---                                                  //
+//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\
+
+//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\
+//                                                                        //
+//                        ---Valtaistuinpeli---                           //
 //                                                                        //
 // Peliä pelataan kaupunkia esittävällä laudalla, jonne pelaajat (kaksi   //
 // tai useampia) asettavat kortteja ja pelimerkkejään. Laudalla on useita //
