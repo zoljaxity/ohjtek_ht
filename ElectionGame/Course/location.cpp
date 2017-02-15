@@ -25,7 +25,7 @@ void Location::initialize()
     shared_ptr<Deck> discards = make_shared<Deck>(true);
 
     connect(deck.get(), &Deck::deckChanged, this, &Location::updateDeck);
-    connect(discards.get(), &Deck::deckChanged, this, &Location::updateDeck);
+    connect(discards.get(), &Deck::deckChanged, this, &Location::updateDiscards);
 
     deck_ = deck;
     discards_ = discards;
