@@ -2,6 +2,9 @@
 //                                                                        //
 // TIE-02400 Ohjelmoinnin tekniikat, kevät 2017, harjoitustyö             //
 // Ryhmärämä - Lauri Solja & Elena Lassila                                //
+// Op.nrot: 229739 & 228889                                               //
+// lauri.solja@student.tut.fifi                                           //
+// elena.lassila@student.tut.fi                                           //
 //                                                                        //
 //\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\
 

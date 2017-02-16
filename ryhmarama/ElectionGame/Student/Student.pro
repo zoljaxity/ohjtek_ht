@@ -7,20 +7,24 @@ TARGET = ElectionGame
 TEMPLATE = app
 
 SOURCES +=\
-#    ../Course/councilor.cpp \
-#    ../Course/deck.cpp \
-#    ../Course/formatexception.cpp \
-#    ../Course/game.cpp \
-#    ../Course/gameexception.cpp \
-#    ../Course/influence.cpp \
-#    ../Course/ioexception.cpp \
-#    ../Course/keyexception.cpp \
-#    ../Course/location.cpp \
-#    ../Course/player.cpp \
-#    ../Course/random.cpp \
-#    ../Course/rangeexception.cpp \
-#    ../Course/settingsreader.cpp \
-#    ../Course/stateexception.cpp \
+    ../Course/controlexception.cpp \
+    ../Course/councilor.cpp \
+    ../Course/deck.cpp \
+    ../Course/formatexception.cpp \
+    ../Course/game.cpp \
+    ../Course/gameexception.cpp \
+    ../Course/influence.cpp \
+    ../Course/ioexception.cpp \
+    ../Course/keyexception.cpp \
+    ../Course/location.cpp \
+    ../Course/manualcontrol.cpp \
+    ../Course/player.cpp \
+    ../Course/random.cpp \
+    ../Course/rangeexception.cpp \
+    ../Course/runner.cpp \
+    ../Course/settingsreader.cpp \
+    ../Course/stateexception.cpp \
+    ../Course/withdrawaction.cpp \
     main.cpp
 
 HEADERS  += \
