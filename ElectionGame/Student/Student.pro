@@ -25,7 +25,8 @@ SOURCES +=\
     ../Course/settingsreader.cpp \
     ../Course/stateexception.cpp \
     ../Course/withdrawaction.cpp \
-    main.cpp
+    main.cpp \
+    agent.cpp
 
 HEADERS  += \
     agent.h
