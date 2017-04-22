@@ -72,7 +72,6 @@ using std::shared_ptr;
 int main(int argc, char* argv[])
 {
     QVector<shared_ptr<Location>> locations;
-
     QApplication a(argc, argv);
 
     // create a game object
@@ -89,23 +88,22 @@ int main(int argc, char* argv[])
         // set up cards for the location deck
         {
             // create an influence card and add it to location deck
-            /*shared_ptr<Influence> influence1 = make_shared<Influence>(location1->name() + " Influence", location1, 1);
-            location1->deck()->addCard(influence1);
+
+            //shared_ptr<Influence> influence1 = make_shared<Influence>("Influence", location1, 1);
+            //location1->deck()->addCard(influence1);
 
             // TODO: create more cards
 
             // shuffle the deck
-            location1->deck()->shuffle();*/
+            //location1->deck()->shuffle();
         }
-
-        // TODO: create more locations
     }
 
     // set up players
     game->addPlayer("Player 1");
     game->addPlayer("Player 2");
 
-    ActionHandler *actionHandler;
+    ActionHandler *actionHandler = new ActionHandler();
     MainWindow mainWin;
 
     // Dependency injections

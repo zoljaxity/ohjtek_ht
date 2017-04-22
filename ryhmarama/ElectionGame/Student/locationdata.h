@@ -25,12 +25,14 @@ namespace Options {
     const int canvasColumnCount = 200;
     const int canvasRownCount = 200;
 
+    const int playerCount = 4;
+
     // List of locations' names and their buttons'
     // locations on the game canvas
     const QVector<locationDataUnit> locations = {
         locationDataUnit("Blacksmiths' Guild", 20,  50),
-        locationDataUnit("Sewers' Guild",      60,  25),
-        locationDataUnit("Traders' Guild",     60,  80),
+        locationDataUnit("Sewers' Guild",      55,  18),
+        locationDataUnit("Traders' Guild",     62,  82),
         locationDataUnit("Baker's Guild",      150, 70),
         locationDataUnit("Shoemaker's Guild",  150, 120),
         locationDataUnit("Rangers' Guild",     120, 160),
