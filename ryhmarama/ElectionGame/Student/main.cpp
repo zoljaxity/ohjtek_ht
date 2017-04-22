@@ -51,8 +51,12 @@
 #include "game.h"
 #include "influence.h"
 #include "location.h"
+#include "mainwindow.h"
+#include "player.h"
+#include "locationdata.h"
 
 #include <QApplication>
+#include <QDebug>
 
 using Interface::Game;
 using Interface::Influence;
@@ -67,44 +71,52 @@ using std::shared_ptr;
  */
 int main(int argc, char* argv[])
 {
+    QVector<shared_ptr<Location>> locations;
+
     QApplication a(argc, argv);
 
     // create a game object
     shared_ptr<Game> game = make_shared<Game>();
-
-    // set up locations of the board
     {
         // create and initialize a location, and add it to the game
-        shared_ptr<Location> location1 = make_shared<Location>(1, "First Location");
-        location1->initialize();
-        game->addLocation(location1);
+        foreach(Options::locationDataUnit locationInfo, Options::locations) {
+            shared_ptr<Location> location = make_shared<Location>(1, locationInfo.name);
+            location->initialize();
+            game->addLocation(location);
+            locations.push_back(location);
+        }
 
         // set up cards for the location deck
         {
             // create an influence card and add it to location deck
-            shared_ptr<Influence> influence1 = make_shared<Influence>(location1->name() + " Influence", location1, 1);
+            /*shared_ptr<Influence> influence1 = make_shared<Influence>(location1->name() + " Influence", location1, 1);
             location1->deck()->addCard(influence1);
 
             // TODO: create more cards
 
             // shuffle the deck
-            location1->deck()->shuffle();
+            location1->deck()->shuffle();*/
         }
 
         // TODO: create more locations
     }
 
     // set up players
-    {
-        // add a player to the game
-        shared_ptr<Player> player1 = game->addPlayer("Player 1");
+    game->addPlayer("Player 1");
+    game->addPlayer("Player 2");
 
-        // TODO: perform other player setup as necessary
+    ActionHandler *actionHandler;
+    MainWindow mainWin;
 
-        // TODO: create more players
-    }
+    // Dependency injections
+    mainWin.setActionHandler(actionHandler);
+    actionHandler->setUI(&mainWin);
+    actionHandler->setGameEngine(&game);
 
-    // TODO: open the main window
+    mainWin.show();
+    game->setActive(true);
 
     a.exec();
+    a.quitOnLastWindowClosed();
+    return 0;
 }

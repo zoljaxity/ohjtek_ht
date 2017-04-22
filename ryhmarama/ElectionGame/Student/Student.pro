@@ -26,10 +26,15 @@ SOURCES +=\
     ../Course/stateexception.cpp \
     ../Course/withdrawaction.cpp \
     main.cpp \
-    agent.cpp
+    agent.cpp \
+    mainwindow.cpp \
+    actionhandler.cpp
 
 HEADERS  += \
-    agent.h
+    agent.h \
+    mainwindow.h \
+    actionhandler.h \
+    locationdata.h
 
 unix {
     target.path = /usr/lib
@@ -60,3 +65,9 @@ unix {
 
 QMAKE_EXTRA_TARGETS += copyfiles
 POST_TARGETDEPS += copyfiles
+
+FORMS += \
+    mainwindow.ui
+
+RESOURCES += \
+    resources.qrc
