@@ -7,6 +7,7 @@
 #include <QGridLayout>
 #include <QSpacerItem>
 #include <QSignalMapper>
+#include <QDialogButtonBox>
 
 #include "actionhandler.h"
 #include "locationdata.h"
@@ -76,7 +77,30 @@ void MainWindow::setActionHandler(ActionHandler *actionHandler) {
 
 void MainWindow::onLocationClicked(QString locationName)
 {
+    QPushButton *setAgent = new QPushButton("Set agent");
+    QPushButton *relations = new QPushButton("Public relations");
+    QPushButton *collect = new QPushButton("Collect resources");
+    QPushButton *negotiate = new QPushButton("Negotiate");
+    QPushButton *withdraw = new QPushButton("Withdraw agent");
+    withdraw->setDisabled(true);
+    QPushButton *cancel   = new QPushButton("Cancel");
+
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(Qt::Vertical);
+    buttonBox->addButton(setAgent, QDialogButtonBox::ActionRole);
+    buttonBox->addButton(relations, QDialogButtonBox::ActionRole);
+    buttonBox->addButton(collect, QDialogButtonBox::ActionRole);
+    buttonBox->addButton(negotiate, QDialogButtonBox::ActionRole);
+    buttonBox->addButton(withdraw, QDialogButtonBox::ActionRole);
+    buttonBox->addButton(cancel, QDialogButtonBox::NoRole);
+
+    buttonBox->setFixedSize(200, 200);
+    buttonBox->setWindowFlags( Qt::CustomizeWindowHint | Qt::WindowCloseButtonHint );
+    buttonBox->setWindowTitle(locationName);
+    QIcon icon(":/Resources/areaicon.png");
+    buttonBox->setWindowIcon(icon);
+    buttonBox->show();
+
     //this->close();
-    qDebug() << "painettu kiltaa: " << locationName;
-    this->actionHandler->say();
+    //qDebug() << "painettu kiltaa: " << locationName;
+    //this->actionHandler->say();
 }
