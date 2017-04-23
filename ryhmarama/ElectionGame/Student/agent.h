@@ -19,7 +19,7 @@ public:
     virtual std::weak_ptr<Interface::Location> location() const;
 
     virtual std::weak_ptr<Interface::Player> owner() const;
-    virtual void setOwner(std::weak_ptr<Interface::Player> owner);
+    void setOwner(std::weak_ptr<Interface::Player> owner);
 
     virtual bool isCommon() const;
 
@@ -28,6 +28,11 @@ public:
     virtual unsigned short connections() const;
     virtual void setConnections(unsigned short connections);
     virtual void modifyConnections(short amount);
+
+private:
+    std::weak_ptr<Interface::Location> location_;
+    std::weak_ptr<Interface::Player> owner_;
+    unsigned short connections_;
 };
 
 #endif // AGENT_H

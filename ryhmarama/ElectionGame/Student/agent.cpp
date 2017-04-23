@@ -1,49 +1,60 @@
+#include <QDebug>
 #include "agent.h"
 #include "agentinterface.h"
+#include "player.h"
+
+using std::shared_ptr;
 
 namespace Interface
 {
 class Player;
 }
 
-QString typeName()  {
-
+QString Agent::typeName() const {
+    return "Agent";
 }
-QString name()  {
-
+QString Agent::name() const {
+    return "Agent Smith";
 }
-QString title() {
-
+QString Agent::title() const {
+    return "";
 }
-std::weak_ptr<Interface::Location> location()  {
-
-}
-
-std::weak_ptr<Interface::Player> owner()  {
-
-}
-void setOwner(std::weak_ptr<Interface::Player> owner){
-
+std::weak_ptr<Interface::Location> Agent::location() const {
+    return location_;
 }
 
-bool isCommon() {
-
+std::weak_ptr<Interface::Player> Agent::owner() const {
+    return owner_;
+}
+void Agent::setOwner(std::weak_ptr<Interface::Player> owner) {
+    owner_ = owner;
 }
 
-std::weak_ptr<Interface::Location> placement() {
-
+bool Agent::isCommon() const {
+    if (location_.lock()) {
+        return false;
+    }
+    return true;
 }
-void setPlacement(std::weak_ptr<Interface::Location> placement){
 
+std::weak_ptr<Interface::Location> Agent::placement() const {
+    return location_;
 }
-unsigned short connections() {
-
+void Agent::setPlacement(std::weak_ptr<Interface::Location> placement) {
+    location_ = placement;
 }
-void setConnections(unsigned short connections){
-
+unsigned short Agent::connections() const {
+    return connections_;
 }
-void modifyConnections(short amount){
-
+void Agent::setConnections(unsigned short connections){
+    connections_ = connections;
+}
+void Agent::modifyConnections(short amount){
+    if (connections_ + amount >= 0) {
+        connections_ += amount;
+    } else {
+        connections_ = 0;
+    }
 }
 
 

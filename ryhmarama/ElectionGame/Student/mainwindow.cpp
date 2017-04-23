@@ -101,6 +101,6 @@ void MainWindow::onLocationClicked(QString locationName)
     buttonBox->show();
 
     //this->close();
-    //qDebug() << "painettu kiltaa: " << locationName;
-    //this->actionHandler->say();
+    qDebug() << "painettu kiltaa: " << locationName;
+    this->actionHandler->say();
 }

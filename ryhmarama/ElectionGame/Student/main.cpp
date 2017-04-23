@@ -54,6 +54,7 @@
 #include "mainwindow.h"
 #include "player.h"
 #include "locationdata.h"
+#include "agent.h"
 
 #include <QApplication>
 #include <QDebug>
@@ -100,7 +101,7 @@ int main(int argc, char* argv[])
     }
 
     // set up players
-    game->addPlayer("Player 1");
+    std::shared_ptr<Player> player1 = game->addPlayer("Player 1");
     game->addPlayer("Player 2");
 
     ActionHandler *actionHandler = new ActionHandler();
