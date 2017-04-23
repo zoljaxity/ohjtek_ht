@@ -80,6 +80,11 @@ void MainWindow::setActionHandler(ActionHandler *actionHandler) {
     this->actionHandler = actionHandler;
 }
 
+void MainWindow::refreshCards(std::vector<shared_ptr<CardInterface>> cards)
+{
+    qDebug() << "refreshiä!" << cards.at(0)->name();
+}
+
 void MainWindow::onLocationClicked(QString locationName)
 {
     QPushButton *setAgent = new QPushButton("Set agent");

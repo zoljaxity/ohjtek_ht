@@ -3,7 +3,12 @@
 
 
 #include "actionhandler.h"
+#include "cardinterface.h"
 #include <QMainWindow>
+#include <vector>
+
+using Interface::CardInterface;
+using std::shared_ptr;
 
 class ActionHandler;
 
@@ -18,6 +23,7 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     void setActionHandler(ActionHandler *actionHandler);
+    void refreshCards(std::vector<shared_ptr<CardInterface> > cards);
     ~MainWindow();
 
 private:

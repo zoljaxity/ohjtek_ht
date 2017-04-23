@@ -24,8 +24,10 @@ void ActionHandler::gameSetup() {
 
     // create a game object
     game_ = make_shared<Game>();
+    playerSetup();
     initializeLocations();
     createCards();
+    ui_->refreshCards( game_->currentPlayer()->cards());
     game_->setActive(true);
 }
 
@@ -50,6 +52,12 @@ void ActionHandler::createCards() {
 
         location->deck()->addCard(card);
     }
+
+    for (int i = 0; i < players_.length(); i++) {
+        players_.at(i)->addCard(
+            make_shared<Agent>()
+        );
+    }
 }
 
 void ActionHandler::initializeLocations() {
@@ -63,6 +71,6 @@ void ActionHandler::initializeLocations() {
 
 // set up players
 void ActionHandler::playerSetup() {
-    std::shared_ptr<Player> player1 = game_->addPlayer("Player 1");
-    std::shared_ptr<Player> player2 = game_->addPlayer("Player 2");
+    players_.push_back(game_->addPlayer("Player 1"));
+    players_.push_back(game_->addPlayer("Player 2"));
 }
