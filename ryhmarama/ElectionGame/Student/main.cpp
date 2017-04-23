@@ -47,23 +47,10 @@
 //                                                                        //
 //\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\
 
-#include "deckinterface.h"
 #include "game.h"
-#include "influence.h"
-#include "location.h"
 #include "mainwindow.h"
-#include "player.h"
-#include "agent.h"
-
 #include <QApplication>
 #include <QDebug>
-
-/*using Interface::Game;
-using Interface::Influence;
-using Interface::Location;
-using Interface::Player;
-using std::make_shared;
-using std::shared_ptr;*/
 
 /*
  * The main program should initialize the game and open the main window, or

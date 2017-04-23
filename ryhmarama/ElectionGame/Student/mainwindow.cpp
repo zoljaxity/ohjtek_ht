@@ -10,7 +10,7 @@
 #include <QDialogButtonBox>
 
 #include "actionhandler.h"
-#include "locationdata.h"
+#include "agent.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -63,12 +63,6 @@ MainWindow::MainWindow(QWidget *parent) :
     meanings->setAlignment(Qt::AlignCenter);
     meanings->setStyleSheet("QLabel { font-size: 10px; font-weight: bold; background-color: rgba(0,0,0,0.7); border-radius: 5px; color: white; }");
     ui->gridLayout->addWidget(meanings, 0, 0, 10, 70);
-
-    QLabel *testi = new QLabel("testi");
-    ui->influenceGrid->addWidget(testi);
-    testi = new QLabel("testi");
-    ui->influenceGrid->addWidget(testi);
-
 }
 
 MainWindow::~MainWindow()
@@ -76,13 +70,29 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::setActionHandler(ActionHandler *actionHandler) {
+void MainWindow::setActionHandler(ActionHandler *actionHandler)
+{
     this->actionHandler = actionHandler;
 }
 
-void MainWindow::refreshCards(std::vector<shared_ptr<CardInterface>> cards)
-{
-    qDebug() << "refreshiä!" << cards.at(0)->name();
+void MainWindow::setPlayerView(std::shared_ptr<Interface::Player> player) {
+
+    int agentAmount = 0;
+    int locationLabelsSet = 0;
+
+    foreach (shared_ptr<CardInterface> card, player->cards()) {
+        if (card->typeName() == "Agent") {
+            agentAmount++;
+        }
+    }
+    foreach(Options::locationDataUnit location, Options::locations) {
+        QLabel *influence = new QLabel(location.name + ": 0");
+        influence->setStyleSheet("margin-left: 20px;");
+        ui->cardGrid->addWidget(influence, 1 + (++locationLabelsSet * 2) % 3, 2 + locationLabelsSet/3);
+    }
+
+    ui->agentsAmount->setText("Agents: " + QString::number(agentAmount));
+    ui->currentPlayerLabel->setText("Vuorossa: " + player->name());
 }
 
 void MainWindow::onLocationClicked(QString locationName)
@@ -109,8 +119,14 @@ void MainWindow::onLocationClicked(QString locationName)
     QIcon icon(":/Resources/areaicon.png");
     buttonBox->setWindowIcon(icon);
     buttonBox->show();
+}
 
-    //this->close();
-    qDebug() << "painettu kiltaa: " << locationName;
-    this->actionHandler->say();
+void MainWindow::on_endTurnButton_clicked()
+{
+    qDebug() << "Vuoron lopetus!";
+}
+
+void MainWindow::on_exitGameButton_clicked()
+{
+    this->close();
 }

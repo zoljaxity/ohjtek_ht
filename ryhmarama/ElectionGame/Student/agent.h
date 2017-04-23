@@ -1,6 +1,7 @@
 #ifndef AGENT_H
 #define AGENT_H
 
+#include <QString>
 #include "agentinterface.h"
 
 namespace Interface

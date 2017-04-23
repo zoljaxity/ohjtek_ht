@@ -2,6 +2,7 @@
 #include "agent.h"
 #include "agentinterface.h"
 #include "player.h"
+#include "locationdata.h"
 
 using std::shared_ptr;
 

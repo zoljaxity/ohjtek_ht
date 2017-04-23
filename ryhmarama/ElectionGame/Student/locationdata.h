@@ -27,8 +27,6 @@ namespace Options {
 
     const int playerCount = 4;
 
-    enum cardType { action, influence };
-
     // List of locations' names and their buttons'
     // locations on the game canvas
     const QVector<locationDataUnit> locations = {

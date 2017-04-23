@@ -10,6 +10,12 @@
     <height>600</height>
    </rect>
   </property>
+  <property name="font">
+   <font>
+    <weight>75</weight>
+    <bold>true</bold>
+   </font>
+  </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
@@ -20,10 +26,10 @@
    <string notr="true"/>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QPushButton" name="pushButton">
+   <widget class="QPushButton" name="exitGameButton">
     <property name="geometry">
      <rect>
-      <x>720</x>
+      <x>700</x>
       <y>530</y>
       <width>75</width>
       <height>23</height>
@@ -67,34 +73,75 @@
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>450</y>
+      <y>440</y>
       <width>351</width>
       <height>111</height>
      </rect>
     </property>
-    <layout class="QGridLayout" name="influenceGrid">
+    <layout class="QGridLayout" name="cardGrid">
      <property name="sizeConstraint">
       <enum>QLayout::SetFixedSize</enum>
      </property>
      <item row="0" column="0" alignment="Qt::AlignTop">
-      <widget class="QLabel" name="label">
+      <widget class="QLabel" name="agentsAmount">
        <property name="font">
         <font>
          <pointsize>11</pointsize>
         </font>
        </property>
        <property name="autoFillBackground">
-        <bool>true</bool>
+        <bool>false</bool>
        </property>
        <property name="styleSheet">
-        <string notr="true"/>
+        <string notr="true">margin-left: 10px; margin-top: 10px;</string>
        </property>
        <property name="text">
-        <string>Influence cards</string>
+        <string>Agents: 0</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0" alignment="Qt::AlignTop">
+      <widget class="QLabel" name="label">
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+        </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">margin-left: 10px;</string>
+       </property>
+       <property name="text">
+        <string>Influence cards:</string>
        </property>
       </widget>
      </item>
     </layout>
+   </widget>
+   <widget class="QLabel" name="currentPlayerLabel">
+    <property name="geometry">
+     <rect>
+      <x>600</x>
+      <y>490</y>
+      <width>191</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Vuorossa:</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="endTurnButton">
+    <property name="geometry">
+     <rect>
+      <x>594</x>
+      <y>530</y>
+      <width>101</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Päätä vuoro</string>
+    </property>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">

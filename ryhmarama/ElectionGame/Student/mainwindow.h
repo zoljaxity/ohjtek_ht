@@ -4,6 +4,8 @@
 
 #include "actionhandler.h"
 #include "cardinterface.h"
+#include "locationdata.h"
+#include "player.h"
 #include <QMainWindow>
 #include <vector>
 
@@ -23,7 +25,7 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     void setActionHandler(ActionHandler *actionHandler);
-    void refreshCards(std::vector<shared_ptr<CardInterface> > cards);
+    void setPlayerView(std::shared_ptr<Interface::Player> player);
     ~MainWindow();
 
 private:
@@ -31,6 +33,8 @@ private:
 
 private slots:
     void onLocationClicked(QString locationName);
+    void on_endTurnButton_clicked();
+    void on_exitGameButton_clicked();
 
 private:
     Ui::MainWindow *ui;

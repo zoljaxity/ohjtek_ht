@@ -27,7 +27,10 @@ void ActionHandler::gameSetup() {
     playerSetup();
     initializeLocations();
     createCards();
-    ui_->refreshCards( game_->currentPlayer()->cards());
+
+    // Refresh UI
+    ui_->setPlayerView(game_->currentPlayer());
+
     game_->setActive(true);
 }
 
