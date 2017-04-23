@@ -53,18 +53,17 @@
 #include "location.h"
 #include "mainwindow.h"
 #include "player.h"
-#include "locationdata.h"
 #include "agent.h"
 
 #include <QApplication>
 #include <QDebug>
 
-using Interface::Game;
+/*using Interface::Game;
 using Interface::Influence;
 using Interface::Location;
 using Interface::Player;
 using std::make_shared;
-using std::shared_ptr;
+using std::shared_ptr;*/
 
 /*
  * The main program should initialize the game and open the main window, or
@@ -72,48 +71,17 @@ using std::shared_ptr;
  */
 int main(int argc, char* argv[])
 {
-    QVector<shared_ptr<Location>> locations;
     QApplication a(argc, argv);
-
-    // create a game object
-    shared_ptr<Game> game = make_shared<Game>();
-    {
-        // create and initialize a location, and add it to the game
-        foreach(Options::locationDataUnit locationInfo, Options::locations) {
-            shared_ptr<Location> location = make_shared<Location>(1, locationInfo.name);
-            location->initialize();
-            game->addLocation(location);
-            locations.push_back(location);
-        }
-
-        // set up cards for the location deck
-        {
-            // create an influence card and add it to location deck
-
-            //shared_ptr<Influence> influence1 = make_shared<Influence>("Influence", location1, 1);
-            //location1->deck()->addCard(influence1);
-
-            // TODO: create more cards
-
-            // shuffle the deck
-            //location1->deck()->shuffle();
-        }
-    }
-
-    // set up players
-    std::shared_ptr<Player> player1 = game->addPlayer("Player 1");
-    game->addPlayer("Player 2");
-
     ActionHandler *actionHandler = new ActionHandler();
     MainWindow mainWin;
 
     // Dependency injections
     mainWin.setActionHandler(actionHandler);
     actionHandler->setUI(&mainWin);
-    actionHandler->setGameEngine(&game);
 
+    // Setup & display
+    actionHandler->gameSetup();
     mainWin.show();
-    game->setActive(true);
 
     a.exec();
     a.quitOnLastWindowClosed();

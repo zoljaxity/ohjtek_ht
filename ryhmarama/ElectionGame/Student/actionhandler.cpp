@@ -1,13 +1,14 @@
 #include "actionhandler.h"
 #include "player.h"
-#include "location.h"
+#include "locationdata.h"
 #include "agent.h"
+#include "cardinterface.h"
+#include "deckinterface.h"
+#include "random.h"
+#include "influence.h"
 #include <QDebug>
 
-using Interface::Location;
-using Interface::Player;
-using Interface::Game;
-using std::make_shared;
+using Interface::Influence;
 
 ActionHandler::ActionHandler() {}
 
@@ -15,18 +16,53 @@ void ActionHandler::setUI(MainWindow *ui) {
     ui_ = ui;
 }
 
-void ActionHandler::setGameEngine(shared_ptr<Game> *game) {
-    game_ = game;
-}
-
 void ActionHandler::say() {
 
-    std::shared_ptr<Agent> agent = make_shared<Agent>();
-    std::shared_ptr<Player> player = (*game_)->players().at(0);
-    std::shared_ptr<Location> location = (*game_)->locations().at(0);
+}
 
-    agent->setOwner(player);
-    qDebug() << location->canSendAgent(player) << agent->isCommon();
-    location->sendAgent(agent);
-    qDebug() << location->canSendAgent(player) << agent->isCommon();
+void ActionHandler::gameSetup() {
+
+    // create a game object
+    game_ = make_shared<Game>();
+    initializeLocations();
+    createCards();
+    game_->setActive(true);
+}
+
+void ActionHandler::createCards() {
+    enum cardType { action, influence };
+    unsigned locationCount = locations_.length();
+
+    // Ten cards per location
+    for (int i = 0; i < locationCount * 10; i++) {
+
+        shared_ptr<Location> location = locations_.at(i / 10);
+        shared_ptr<Interface::CardInterface> card;
+
+        // Shuffle all the cards in the game now so that
+        // we can have varying amounts of agents/influence cards
+        // in each deck
+        if (Interface::Random::RANDOM.uint(1) == 0) {
+            card = make_shared<Agent>();
+        } else {
+            card = make_shared<Influence>("Influence", location, 1);
+        }
+
+        location->deck()->addCard(card);
+    }
+}
+
+void ActionHandler::initializeLocations() {
+    foreach(Options::locationDataUnit locationInfo, Options::locations) {
+        shared_ptr<Location> location = make_shared<Location>(1, locationInfo.name);
+        location->initialize();
+        game_->addLocation(location);
+        locations_.push_back(location);
+    }
+}
+
+// set up players
+void ActionHandler::playerSetup() {
+    std::shared_ptr<Player> player1 = game_->addPlayer("Player 1");
+    std::shared_ptr<Player> player2 = game_->addPlayer("Player 2");
 }

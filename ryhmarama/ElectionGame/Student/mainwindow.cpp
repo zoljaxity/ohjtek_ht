@@ -64,6 +64,11 @@ MainWindow::MainWindow(QWidget *parent) :
     meanings->setStyleSheet("QLabel { font-size: 10px; font-weight: bold; background-color: rgba(0,0,0,0.7); border-radius: 5px; color: white; }");
     ui->gridLayout->addWidget(meanings, 0, 0, 10, 70);
 
+    QLabel *testi = new QLabel("testi");
+    ui->influenceGrid->addWidget(testi);
+    testi = new QLabel("testi");
+    ui->influenceGrid->addWidget(testi);
+
 }
 
 MainWindow::~MainWindow()
