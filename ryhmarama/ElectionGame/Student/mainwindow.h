@@ -5,10 +5,12 @@
 #include <QMainWindow>
 #include <vector>
 #include <QSignalMapper>
+#include <QLabel>
 
 #include "actionhandler.h"
 #include "cardinterface.h"
 #include "locationdata.h"
+#include "location.h"
 #include "player.h"
 
 using Interface::CardInterface;
@@ -27,7 +29,10 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     void setActionHandler(ActionHandler *actionHandler);
-    void setPlayerView(std::shared_ptr<Interface::Player> player);
+    void setPlayerView(
+        std::shared_ptr<Interface::Player> player,
+        QVector<shared_ptr<Interface::Location>> locationList
+    );
     ~MainWindow();
 
 private:
@@ -39,6 +44,9 @@ private:
     QSignalMapper* actionSignalMapper_;
     std::map<QString, QPushButton*> dialogButtons_;
     QString currentLocation_;
+
+    // Usage: locationPlayerStats[locationName][playerName] returns stats label
+    std::map<QString, std::map<QString, QLabel*>> locationPlayerStats_;
 
 private slots:
     void onLocationClicked(QString locationName);

@@ -27,14 +27,14 @@ void ActionHandler::gameSetup() {
     createCards();
 
     // Refresh UI
-    ui_->setPlayerView(game_->currentPlayer());
+    ui_->setPlayerView(game_->currentPlayer(), locationList_);
 
     game_->setActive(true);
 }
 
 void ActionHandler::endTurn() {
     game_->nextPlayer();
-    ui_->setPlayerView(game_->currentPlayer());
+    ui_->setPlayerView(game_->currentPlayer(), locationList_);
 }
 
 bool ActionHandler::canSendAgentToLocation(QString locationName) {
@@ -67,7 +67,7 @@ void ActionHandler::sendAgent(QString locationName)
             player->playCard(agent);
             playerAgentLocations_[locationName][player->name()] = agent;
 
-            ui_->setPlayerView(game_->currentPlayer());
+            ui_->setPlayerView(game_->currentPlayer(), locationList_);
             return;
         }
     }
@@ -108,6 +108,7 @@ void ActionHandler::initializeLocations() {
         location->initialize();
         game_->addLocation(location);
         locations_[locationInfo.name] = location;
+        locationList_.push_back(location);
 
         foreach (shared_ptr<Player> player, players_) {
             playerAgentLocations_[locationInfo.name][player->name()] = nullptr;

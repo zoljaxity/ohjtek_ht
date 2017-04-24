@@ -1,8 +1,8 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "agentinterface.h"
 #include <QDir>
 #include <QIcon>
-#include <QLabel>
 #include <QDebug>
 #include <QGridLayout>
 #include <QSpacerItem>
@@ -45,14 +45,17 @@ MainWindow::MainWindow(QWidget *parent) :
                 playerColour = "white";
                 break;
             }
-            QLabel *test = new QLabel("20 / 150 / yes");
-            test->setAlignment(Qt::AlignCenter);
-            test->setStyleSheet("QLabel { font-size: 10px; font-weight: bold; background-color: rgba(0,0,0,0.7); border-radius: 5px; color: " + playerColour + "; }");
-            ui->gridLayout->addWidget(test,location.buttonRow + 11 + 8*i, location.buttonCol, 7, 30);
+            QLabel *stats = new QLabel("0 / 0");
+            stats->setAlignment(Qt::AlignCenter);
+            stats->setStyleSheet("QLabel { font-size: 10px; font-weight: bold; background-color: rgba(0,0,0,0.7); border-radius: 5px; color: " + playerColour + "; }");
+            ui->gridLayout->addWidget(stats,location.buttonRow + 11 + 8*i, location.buttonCol, 7, 30);
 
-            QLabel *playerName = new QLabel("Player " + QString::number(i));
+            QLabel *playerName = new QLabel("Player " + QString::number(i+1));
             playerName->setStyleSheet("QLabel { font-size: 15px; font-weight: bold; background-color: rgba(0,0,0,0.0); border-radius: 5px; color: " + playerColour + "; }");
             ui->gridLayout->addWidget(playerName, 11 + 8*i, 2, 7, 70);
+
+            // TODO: fix this and get player names from some actual place
+            locationPlayerStats_[location.name][playerName->text()] = stats;
         }
     }
     connect(signalMapper, SIGNAL(mapped(QString)), this, SLOT(onLocationClicked(QString)));
@@ -130,7 +133,11 @@ void MainWindow::setActionHandler(ActionHandler *actionHandler)
     actionHandler_ = actionHandler;
 }
 
-void MainWindow::setPlayerView(std::shared_ptr<Interface::Player> player) {
+void MainWindow::setPlayerView(
+    std::shared_ptr<Interface::Player> player,
+    QVector<shared_ptr<Interface::Location>> locationList
+)
+{
     int agentAmount = 0;
     foreach (shared_ptr<CardInterface> card, player->cards()) {
         if (card->typeName() == Options::agentTypeName) {
@@ -138,8 +145,16 @@ void MainWindow::setPlayerView(std::shared_ptr<Interface::Player> player) {
         }
     }
     ui->agentsAmount->setText("Agents: " + QString::number(agentAmount));
-    ui->currentPlayerLabel->setText("Vuorossa: " + player->name());
+    ui->currentPlayerLabel->setText("In turn: " + player->name());
+
+    foreach (shared_ptr<Location> location, locationList) {
+        foreach (shared_ptr<Interface::AgentInterface> agent, location->agents()) {
+            QLabel* label = this->locationPlayerStats_[location->name()][agent->owner().lock()->name()];
+            label->setText("0 / 0 agent");
+        }
+    }
 }
+
 
 void MainWindow::onLocationClicked(QString locationName)
 {
