@@ -63,6 +63,19 @@ MainWindow::MainWindow(QWidget *parent) :
     meanings->setAlignment(Qt::AlignCenter);
     meanings->setStyleSheet("QLabel { font-size: 10px; font-weight: bold; background-color: rgba(0,0,0,0.7); border-radius: 5px; color: white; }");
     ui->gridLayout->addWidget(meanings, 0, 0, 10, 70);
+
+    // Set location influence card labels
+    int locationLabelsSet = 0;
+    foreach(Options::locationDataUnit location, Options::locations) {
+        QLabel *locationLabel = new QLabel(location.name + ": 0");
+        locationLabel->setStyleSheet("margin-left: 20px;");
+        ui->cardGrid->addWidget(
+            locationLabel, // Player's influence cards from location
+            1 + locationLabelsSet % 3, // Rows of three
+            2 + locationLabelsSet / 3  // Columns of three
+        );
+        ++locationLabelsSet;
+    }
 }
 
 MainWindow::~MainWindow()
@@ -72,31 +85,26 @@ MainWindow::~MainWindow()
 
 void MainWindow::setActionHandler(ActionHandler *actionHandler)
 {
-    this->actionHandler = actionHandler;
+    actionHandler_ = actionHandler;
 }
 
 void MainWindow::setPlayerView(std::shared_ptr<Interface::Player> player) {
 
     int agentAmount = 0;
-    int locationLabelsSet = 0;
-
     foreach (shared_ptr<CardInterface> card, player->cards()) {
         if (card->typeName() == "Agent") {
             agentAmount++;
         }
     }
-    foreach(Options::locationDataUnit location, Options::locations) {
-        QLabel *influence = new QLabel(location.name + ": 0");
-        influence->setStyleSheet("margin-left: 20px;");
-        ui->cardGrid->addWidget(influence, 1 + (++locationLabelsSet * 2) % 3, 2 + locationLabelsSet/3);
-    }
-
     ui->agentsAmount->setText("Agents: " + QString::number(agentAmount));
     ui->currentPlayerLabel->setText("Vuorossa: " + player->name());
 }
 
 void MainWindow::onLocationClicked(QString locationName)
 {
+
+    actionHandler_->canSendAgentToLocation(locationName);
+
     QPushButton *setAgent = new QPushButton("Set agent");
     QPushButton *relations = new QPushButton("Public relations");
     QPushButton *collect = new QPushButton("Collect resources");
@@ -123,7 +131,7 @@ void MainWindow::onLocationClicked(QString locationName)
 
 void MainWindow::on_endTurnButton_clicked()
 {
-    qDebug() << "Vuoron lopetus!";
+    actionHandler_->endTurn();
 }
 
 void MainWindow::on_exitGameButton_clicked()

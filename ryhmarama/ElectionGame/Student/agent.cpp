@@ -15,7 +15,7 @@ QString Agent::typeName() const {
     return "Agent";
 }
 QString Agent::name() const {
-    return "Agent Smith";
+    return name_;
 }
 QString Agent::title() const {
     return "";
@@ -56,6 +56,12 @@ void Agent::modifyConnections(short amount){
     } else {
         connections_ = 0;
     }
+}
+
+void Agent::setName(QString name)
+{
+    qDebug() << "jebule:" << name;
+    name_ = name;
 }
 
 

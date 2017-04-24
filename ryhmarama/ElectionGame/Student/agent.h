@@ -30,7 +30,10 @@ public:
     virtual void setConnections(unsigned short connections);
     virtual void modifyConnections(short amount);
 
+    void setName(QString name);
+
 private:
+    QString name_;
     std::weak_ptr<Interface::Location> location_;
     std::weak_ptr<Interface::Player> owner_;
     unsigned short connections_;

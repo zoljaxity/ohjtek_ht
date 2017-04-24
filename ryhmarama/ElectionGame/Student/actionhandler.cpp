@@ -6,18 +6,16 @@
 #include "deckinterface.h"
 #include "random.h"
 #include "influence.h"
+#include "agentfactory.h"
 #include <QDebug>
 
 using Interface::Influence;
+using Interface::AgentFactory;
 
 ActionHandler::ActionHandler() {}
 
 void ActionHandler::setUI(MainWindow *ui) {
     ui_ = ui;
-}
-
-void ActionHandler::say() {
-
 }
 
 void ActionHandler::gameSetup() {
@@ -34,14 +32,42 @@ void ActionHandler::gameSetup() {
     game_->setActive(true);
 }
 
+void ActionHandler::endTurn() {
+    game_->nextPlayer();
+    ui_->setPlayerView(game_->currentPlayer());
+}
+
+void ActionHandler::canSendAgentToLocation(QString locationName) {
+    shared_ptr<Location> location = locations_[locationName];
+    shared_ptr<Player> player = game_->currentPlayer();
+    std::shared_ptr<Interface::AgentInterface> card_;
+
+
+    qDebug() << "voi lähettää:" << location->canSendAgent(player);
+
+    foreach(std::shared_ptr<Interface::CardInterface> card, player->cards()) {
+        //card_ = dynamic_cast<std::shared_ptr<Interface::AgentInterface>>(card);
+        qDebug() << card->typeName();
+    }
+
+    location->sendAgent(card_);
+
+    qDebug() << "------";
+    foreach(std::shared_ptr<Interface::CardInterface> card, player->cards()) {
+        qDebug() << card->typeName();
+    }
+
+    qDebug() << "voi lähettää:" << location->canSendAgent(player);
+}
+
 void ActionHandler::createCards() {
     enum cardType { action, influence };
-    unsigned locationCount = locations_.length();
+    unsigned locationCount = locationList_.length();
 
     // Ten cards per location
     for (int i = 0; i < locationCount * 10; i++) {
 
-        shared_ptr<Location> location = locations_.at(i / 10);
+        shared_ptr<Location> location = locationList_.at(i / 10);
         shared_ptr<Interface::CardInterface> card;
 
         // Shuffle all the cards in the game now so that
@@ -57,9 +83,7 @@ void ActionHandler::createCards() {
     }
 
     for (int i = 0; i < players_.length(); i++) {
-        players_.at(i)->addCard(
-            make_shared<Agent>()
-        );
+        players_.at(i)->addCard(AgentFactory::AGENTFACTORY.createAgent());
     }
 }
 
@@ -68,7 +92,7 @@ void ActionHandler::initializeLocations() {
         shared_ptr<Location> location = make_shared<Location>(1, locationInfo.name);
         location->initialize();
         game_->addLocation(location);
-        locations_.push_back(location);
+        locations_[locationInfo.name] = location;
     }
 }
 

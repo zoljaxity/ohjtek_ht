@@ -28,13 +28,15 @@ SOURCES +=\
     main.cpp \
     agent.cpp \
     mainwindow.cpp \
-    actionhandler.cpp
+    actionhandler.cpp \
+    agentfactory.cpp
 
 HEADERS  += \
     agent.h \
     mainwindow.h \
     actionhandler.h \
-    locationdata.h
+    locationdata.h \
+    agentfactory.h
 
 unix {
     target.path = /usr/lib

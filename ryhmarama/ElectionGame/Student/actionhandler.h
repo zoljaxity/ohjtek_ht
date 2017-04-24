@@ -20,8 +20,12 @@ class ActionHandler
 public:
     ActionHandler();
     void setUI(MainWindow *ui);
-    void say();
     void gameSetup();
+
+    // Called from UI:
+    void endTurn();
+    void canSendAgentToLocation(QString locationName);
+
 private:
 
     void playerSetup();
@@ -30,7 +34,8 @@ private:
 
     shared_ptr<Game> game_;
     MainWindow *ui_;
-    QVector<shared_ptr<Location>> locations_;
+    QVector<shared_ptr<Location>> locationList_;
+    std::map<QString, shared_ptr<Location>> locations_;
     QVector<shared_ptr<Player>> players_;
 };
 

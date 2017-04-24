@@ -29,7 +29,7 @@ public:
     ~MainWindow();
 
 private:
-    ActionHandler *actionHandler;
+    ActionHandler *actionHandler_;
 
 private slots:
     void onLocationClicked(QString locationName);
