@@ -37,27 +37,24 @@ void ActionHandler::endTurn() {
     ui_->setPlayerView(game_->currentPlayer());
 }
 
-void ActionHandler::canSendAgentToLocation(QString locationName) {
+bool ActionHandler::canSendAgentToLocation(QString locationName) {
     shared_ptr<Location> location = locations_[locationName];
     shared_ptr<Player> player = game_->currentPlayer();
-    std::shared_ptr<Interface::AgentInterface> card_;
-
-
-    qDebug() << "voi lähettää:" << location->canSendAgent(player);
-
-    foreach(std::shared_ptr<Interface::CardInterface> card, player->cards()) {
-        //card_ = dynamic_cast<std::shared_ptr<Interface::AgentInterface>>(card);
-        qDebug() << card->typeName();
+    if (location->canSendAgent(player)) {
+        foreach (shared_ptr<CardInterface> card, player->cards()) {
+            if (card->typeName() == Options::agentTypeName) {
+                return true;
+            }
+        }
     }
-
-    location->sendAgent(card_);
-
-    qDebug() << "------";
-    foreach(std::shared_ptr<Interface::CardInterface> card, player->cards()) {
-        qDebug() << card->typeName();
+    return false;
+/*
+    std::shared_ptr<Agent> nextAgent;
+    if (nextAgent) {
+        location->sendAgent(nextAgent);
+        player->playCard(nextAgent);
     }
-
-    qDebug() << "voi lähettää:" << location->canSendAgent(player);
+*/
 }
 
 void ActionHandler::createCards() {
@@ -65,7 +62,7 @@ void ActionHandler::createCards() {
     unsigned locationCount = locationList_.length();
 
     // Ten cards per location
-    for (int i = 0; i < locationCount * 10; i++) {
+    for (unsigned i = 0; i < locationCount * 10; i++) {
 
         shared_ptr<Location> location = locationList_.at(i / 10);
         shared_ptr<Interface::CardInterface> card;
@@ -83,7 +80,9 @@ void ActionHandler::createCards() {
     }
 
     for (int i = 0; i < players_.length(); i++) {
-        players_.at(i)->addCard(AgentFactory::AGENTFACTORY.createAgent());
+        shared_ptr<Agent> agent = AgentFactory::AGENTFACTORY.createAgent();
+        agents_[agent->name()] = agent;
+        players_.at(i)->addCard(agent);
     }
 }
 
@@ -98,6 +97,7 @@ void ActionHandler::initializeLocations() {
 
 // set up players
 void ActionHandler::playerSetup() {
-    players_.push_back(game_->addPlayer("Player 1"));
-    players_.push_back(game_->addPlayer("Player 2"));
+    for (int i = 0; i < Options::playerCount; i++) {
+        players_.push_back(game_->addPlayer("Player " + QString::number(i+1)));
+    }
 }

@@ -1,13 +1,15 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <QDialogButtonBox>
+#include <QMainWindow>
+#include <vector>
+#include <QSignalMapper>
 
 #include "actionhandler.h"
 #include "cardinterface.h"
 #include "locationdata.h"
 #include "player.h"
-#include <QMainWindow>
-#include <vector>
 
 using Interface::CardInterface;
 using std::shared_ptr;
@@ -29,10 +31,17 @@ public:
     ~MainWindow();
 
 private:
+    void initializeActionDialog();
     ActionHandler *actionHandler_;
+    QDialogButtonBox *buttonBox_;
+    QSignalMapper* actionSignalMapper_;
+    std::map<QString, QPushButton*> dialogButtons_;
+    QString currentLocation_;
 
 private slots:
     void onLocationClicked(QString locationName);
+    void onCommitAction(QString action);
+    void closeDialog();
     void on_endTurnButton_clicked();
     void on_exitGameButton_clicked();
 

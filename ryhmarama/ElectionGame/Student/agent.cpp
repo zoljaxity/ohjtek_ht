@@ -60,7 +60,6 @@ void Agent::modifyConnections(short amount){
 
 void Agent::setName(QString name)
 {
-    qDebug() << "jebule:" << name;
     name_ = name;
 }
 

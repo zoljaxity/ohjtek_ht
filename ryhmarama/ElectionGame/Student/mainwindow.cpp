@@ -7,7 +7,6 @@
 #include <QGridLayout>
 #include <QSpacerItem>
 #include <QSignalMapper>
-#include <QDialogButtonBox>
 
 #include "actionhandler.h"
 #include "agent.h"
@@ -58,7 +57,6 @@ MainWindow::MainWindow(QWidget *parent) :
     }
     connect(signalMapper, SIGNAL(mapped(QString)), this, SLOT(onLocationClicked(QString)));
 
-
     QLabel *meanings = new QLabel("Meanings: Influence / multiplier / Has agent");
     meanings->setAlignment(Qt::AlignCenter);
     meanings->setStyleSheet("QLabel { font-size: 10px; font-weight: bold; background-color: rgba(0,0,0,0.7); border-radius: 5px; color: white; }");
@@ -76,11 +74,55 @@ MainWindow::MainWindow(QWidget *parent) :
         );
         ++locationLabelsSet;
     }
+
+    initializeActionDialog();
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::initializeActionDialog()
+{
+    // Create action dialog buttons
+    dialogButtons_["setAgent"]  = new QPushButton("Set agent");
+    dialogButtons_["relations"] = new QPushButton("Public relations");
+    dialogButtons_["collect"]   = new QPushButton("Collect resources");
+    dialogButtons_["negotiate"] = new QPushButton("Negotiate");
+    dialogButtons_["withdraw"]  = new QPushButton("Withdraw agent");
+    dialogButtons_["cancel"]    = new QPushButton("Cancel");
+
+    // Create signal mapper & map values to buttons
+    actionSignalMapper_ = new QSignalMapper(this);
+    actionSignalMapper_->setMapping(dialogButtons_["setAgent"],  "setAgent");
+    actionSignalMapper_->setMapping(dialogButtons_["relations"], "relations");
+    actionSignalMapper_->setMapping(dialogButtons_["collect"],   "collect");
+    actionSignalMapper_->setMapping(dialogButtons_["negotiate"], "negotiate");
+    actionSignalMapper_->setMapping(dialogButtons_["withdraw"],  "withdraw");
+
+    // Connect buttons to signal mapper
+    connect(dialogButtons_["setAgent"],  SIGNAL(clicked()), actionSignalMapper_, SLOT(map()));
+    connect(dialogButtons_["relations"], SIGNAL(clicked()), actionSignalMapper_, SLOT(map()));
+    connect(dialogButtons_["collect"],   SIGNAL(clicked()), actionSignalMapper_, SLOT(map()));
+    connect(dialogButtons_["negotiate"], SIGNAL(clicked()), actionSignalMapper_, SLOT(map()));
+    connect(dialogButtons_["withdraw"],  SIGNAL(clicked()), actionSignalMapper_, SLOT(map()));
+    connect(dialogButtons_["cancel"],    SIGNAL(clicked()), this,                SLOT(closeDialog()));
+
+    // Connect signal mapper to function
+    connect(actionSignalMapper_, SIGNAL(mapped(QString)), this, SLOT(onCommitAction(QString)));
+
+    // Create dialog box, add buttons to it, some settings
+    buttonBox_ = new QDialogButtonBox(Qt::Vertical);
+    buttonBox_->addButton(dialogButtons_["setAgent"],  QDialogButtonBox::ActionRole);
+    buttonBox_->addButton(dialogButtons_["relations"], QDialogButtonBox::ActionRole);
+    buttonBox_->addButton(dialogButtons_["collect"],   QDialogButtonBox::ActionRole);
+    buttonBox_->addButton(dialogButtons_["negotiate"], QDialogButtonBox::ActionRole);
+    buttonBox_->addButton(dialogButtons_["withdraw"],  QDialogButtonBox::ActionRole);
+    buttonBox_->addButton(dialogButtons_["cancel"],    QDialogButtonBox::NoRole);
+    buttonBox_->setWindowIcon(QIcon(":/Resources/areaicon.png"));
+    buttonBox_->setFixedSize(200, 200);
+    buttonBox_->setWindowFlags( Qt::CustomizeWindowHint | Qt::WindowCloseButtonHint );
 }
 
 void MainWindow::setActionHandler(ActionHandler *actionHandler)
@@ -89,10 +131,9 @@ void MainWindow::setActionHandler(ActionHandler *actionHandler)
 }
 
 void MainWindow::setPlayerView(std::shared_ptr<Interface::Player> player) {
-
     int agentAmount = 0;
     foreach (shared_ptr<CardInterface> card, player->cards()) {
-        if (card->typeName() == "Agent") {
+        if (card->typeName() == Options::agentTypeName) {
             agentAmount++;
         }
     }
@@ -102,31 +143,27 @@ void MainWindow::setPlayerView(std::shared_ptr<Interface::Player> player) {
 
 void MainWindow::onLocationClicked(QString locationName)
 {
+    currentLocation_ = locationName;
+    if (actionHandler_->canSendAgentToLocation(locationName)) {
+        dialogButtons_["setAgent"]->setDisabled(false);
+        dialogButtons_["relations"]->setDisabled(true);
+        dialogButtons_["collect"]->setDisabled(true);
+        dialogButtons_["negotiate"]->setDisabled(true);
+        dialogButtons_["withdraw"]->setDisabled(true);
+    } else {
+        dialogButtons_["setAgent"]->setDisabled(true);
+    }
+    buttonBox_->setWindowTitle(locationName);
+    buttonBox_->show();
+}
 
-    actionHandler_->canSendAgentToLocation(locationName);
+void MainWindow::onCommitAction(QString action)
+{
+    qDebug() << "suoritetaan toiminto" << action << "kohteessa" << currentLocation_;
+}
 
-    QPushButton *setAgent = new QPushButton("Set agent");
-    QPushButton *relations = new QPushButton("Public relations");
-    QPushButton *collect = new QPushButton("Collect resources");
-    QPushButton *negotiate = new QPushButton("Negotiate");
-    QPushButton *withdraw = new QPushButton("Withdraw agent");
-    withdraw->setDisabled(true);
-    QPushButton *cancel   = new QPushButton("Cancel");
-
-    QDialogButtonBox *buttonBox = new QDialogButtonBox(Qt::Vertical);
-    buttonBox->addButton(setAgent, QDialogButtonBox::ActionRole);
-    buttonBox->addButton(relations, QDialogButtonBox::ActionRole);
-    buttonBox->addButton(collect, QDialogButtonBox::ActionRole);
-    buttonBox->addButton(negotiate, QDialogButtonBox::ActionRole);
-    buttonBox->addButton(withdraw, QDialogButtonBox::ActionRole);
-    buttonBox->addButton(cancel, QDialogButtonBox::NoRole);
-
-    buttonBox->setFixedSize(200, 200);
-    buttonBox->setWindowFlags( Qt::CustomizeWindowHint | Qt::WindowCloseButtonHint );
-    buttonBox->setWindowTitle(locationName);
-    QIcon icon(":/Resources/areaicon.png");
-    buttonBox->setWindowIcon(icon);
-    buttonBox->show();
+void MainWindow::closeDialog() {
+    buttonBox_->close();
 }
 
 void MainWindow::on_endTurnButton_clicked()

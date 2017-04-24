@@ -26,6 +26,7 @@ namespace Options {
     const int canvasRownCount = 200;
 
     const int playerCount = 4;
+    const QString agentTypeName = "Agent";
 
     // List of locations' names and their buttons'
     // locations on the game canvas

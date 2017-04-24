@@ -5,6 +5,7 @@
 #include "game.h"
 #include "location.h"
 #include "player.h"
+#include "agent.h"
 #include "mainwindow.h"
 
 using Interface::Location;
@@ -24,7 +25,7 @@ public:
 
     // Called from UI:
     void endTurn();
-    void canSendAgentToLocation(QString locationName);
+    bool canSendAgentToLocation(QString locationName);
 
 private:
 
@@ -35,8 +36,9 @@ private:
     shared_ptr<Game> game_;
     MainWindow *ui_;
     QVector<shared_ptr<Location>> locationList_;
-    std::map<QString, shared_ptr<Location>> locations_;
     QVector<shared_ptr<Player>> players_;
+    std::map<QString, shared_ptr<Location>> locations_;
+    std::map<QString, shared_ptr<Agent>> agents_;
 };
 
 #endif // ACTIONHANDLER_H
