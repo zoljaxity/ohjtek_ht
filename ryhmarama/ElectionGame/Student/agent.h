@@ -31,8 +31,10 @@ public:
     virtual void modifyConnections(short amount);
 
     void setName(QString name);
+    void setCanAct(bool canAct);
 
 private:
+    bool canAct_;
     QString name_;
     std::weak_ptr<Interface::Location> location_;
     std::weak_ptr<Interface::Player> owner_;

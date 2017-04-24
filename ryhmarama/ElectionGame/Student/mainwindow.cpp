@@ -85,44 +85,44 @@ MainWindow::~MainWindow()
 
 void MainWindow::initializeActionDialog()
 {
-    // Create action dialog buttons
-    dialogButtons_["setAgent"]  = new QPushButton("Set agent");
-    dialogButtons_["relations"] = new QPushButton("Public relations");
-    dialogButtons_["collect"]   = new QPushButton("Collect resources");
-    dialogButtons_["negotiate"] = new QPushButton("Negotiate");
-    dialogButtons_["withdraw"]  = new QPushButton("Withdraw agent");
-    dialogButtons_["cancel"]    = new QPushButton("Cancel");
-
-    // Create signal mapper & map values to buttons
+    // Create button signal mapper and dialog window
     actionSignalMapper_ = new QSignalMapper(this);
-    actionSignalMapper_->setMapping(dialogButtons_["setAgent"],  "setAgent");
-    actionSignalMapper_->setMapping(dialogButtons_["relations"], "relations");
-    actionSignalMapper_->setMapping(dialogButtons_["collect"],   "collect");
-    actionSignalMapper_->setMapping(dialogButtons_["negotiate"], "negotiate");
-    actionSignalMapper_->setMapping(dialogButtons_["withdraw"],  "withdraw");
+    buttonBox_ = new QDialogButtonBox(Qt::Vertical);
 
-    // Connect buttons to signal mapper
-    connect(dialogButtons_["setAgent"],  SIGNAL(clicked()), actionSignalMapper_, SLOT(map()));
-    connect(dialogButtons_["relations"], SIGNAL(clicked()), actionSignalMapper_, SLOT(map()));
-    connect(dialogButtons_["collect"],   SIGNAL(clicked()), actionSignalMapper_, SLOT(map()));
-    connect(dialogButtons_["negotiate"], SIGNAL(clicked()), actionSignalMapper_, SLOT(map()));
-    connect(dialogButtons_["withdraw"],  SIGNAL(clicked()), actionSignalMapper_, SLOT(map()));
-    connect(dialogButtons_["cancel"],    SIGNAL(clicked()), this,                SLOT(closeDialog()));
+    // Create action buttons, connect them to signal mapper & add buttons to window
+    foreach (QString buttonName, Options::agentButtons) {
+        dialogButtons_[buttonName] = new QPushButton(Options::buttonLabels.at(buttonName));
+        buttonBox_->addButton(dialogButtons_[buttonName], QDialogButtonBox::ActionRole);
+        actionSignalMapper_->setMapping(dialogButtons_[buttonName], buttonName);
+        connect(dialogButtons_[buttonName], SIGNAL(clicked()), actionSignalMapper_, SLOT(map()));
+    }
 
-    // Connect signal mapper to function
+    // Connect signal mapper to action handler
     connect(actionSignalMapper_, SIGNAL(mapped(QString)), this, SLOT(onCommitAction(QString)));
 
-    // Create dialog box, add buttons to it, some settings
-    buttonBox_ = new QDialogButtonBox(Qt::Vertical);
-    buttonBox_->addButton(dialogButtons_["setAgent"],  QDialogButtonBox::ActionRole);
-    buttonBox_->addButton(dialogButtons_["relations"], QDialogButtonBox::ActionRole);
-    buttonBox_->addButton(dialogButtons_["collect"],   QDialogButtonBox::ActionRole);
-    buttonBox_->addButton(dialogButtons_["negotiate"], QDialogButtonBox::ActionRole);
-    buttonBox_->addButton(dialogButtons_["withdraw"],  QDialogButtonBox::ActionRole);
-    buttonBox_->addButton(dialogButtons_["cancel"],    QDialogButtonBox::NoRole);
+    // Create cancel button and connect it to dialog closer
+    dialogButtons_["cancel"] = new QPushButton("Cancel");
+    connect(dialogButtons_["cancel"], SIGNAL(clicked()), this, SLOT(closeDialog()));
+    buttonBox_->addButton(dialogButtons_["cancel"], QDialogButtonBox::NoRole);
+
+    // Dialog window settings
     buttonBox_->setWindowIcon(QIcon(":/Resources/areaicon.png"));
     buttonBox_->setFixedSize(200, 200);
     buttonBox_->setWindowFlags( Qt::CustomizeWindowHint | Qt::WindowCloseButtonHint );
+}
+
+void MainWindow::disableActionDialogButtons()
+{
+    foreach (QString buttonName, Options::agentButtons) {
+        dialogButtons_[buttonName]->setDisabled(true);
+    }
+}
+
+void MainWindow::enableActionButtons()
+{
+    foreach (QString buttonName, Options::agentActionButtons) {
+        dialogButtons_[buttonName]->setDisabled(false);
+    }
 }
 
 void MainWindow::setActionHandler(ActionHandler *actionHandler)
@@ -144,14 +144,11 @@ void MainWindow::setPlayerView(std::shared_ptr<Interface::Player> player) {
 void MainWindow::onLocationClicked(QString locationName)
 {
     currentLocation_ = locationName;
+    disableActionDialogButtons();
     if (actionHandler_->canSendAgentToLocation(locationName)) {
         dialogButtons_["setAgent"]->setDisabled(false);
-        dialogButtons_["relations"]->setDisabled(true);
-        dialogButtons_["collect"]->setDisabled(true);
-        dialogButtons_["negotiate"]->setDisabled(true);
-        dialogButtons_["withdraw"]->setDisabled(true);
     } else {
-        dialogButtons_["setAgent"]->setDisabled(true);
+        enableActionButtons();
     }
     buttonBox_->setWindowTitle(locationName);
     buttonBox_->show();
@@ -159,7 +156,23 @@ void MainWindow::onLocationClicked(QString locationName)
 
 void MainWindow::onCommitAction(QString action)
 {
-    qDebug() << "suoritetaan toiminto" << action << "kohteessa" << currentLocation_;
+    // Would've used action enum here but signal mapper doesn't
+    // support custom types - Also switch case doesn't work on strings
+    if (action == "setAgent") {
+        actionHandler_->sendAgent(currentLocation_);
+        dialogButtons_["setAgent"]->setDisabled(true);
+        enableActionButtons();
+        return;
+    } else if (action == "relations") {
+
+    } else if (action == "collect") {
+
+    } else if (action == "negotiate") {
+
+    } else if (action == "withdraw") {
+
+    }
+    disableActionDialogButtons();
 }
 
 void MainWindow::closeDialog() {

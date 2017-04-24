@@ -27,6 +27,19 @@ namespace Options {
 
     const int playerCount = 4;
     const QString agentTypeName = "Agent";
+    const QVector<QString> agentButtons = {
+        "setAgent", "relations", "collect", "negotiate", "withdraw"
+    };
+    const QVector<QString> agentActionButtons = {
+        "relations", "collect", "negotiate", "withdraw"
+    };
+    const std::map<QString, QString> buttonLabels = {
+        {"setAgent",  "Set agent"},
+        {"relations", "Public relations"},
+        {"collect",   "Collect resources"},
+        {"negotiate", "Negotiate"},
+        {"withdraw",  "Withdraw agent"}
+    };
 
     // List of locations' names and their buttons'
     // locations on the game canvas

@@ -32,6 +32,8 @@ public:
 
 private:
     void initializeActionDialog();
+    void disableActionDialogButtons();
+    void enableActionButtons();
     ActionHandler *actionHandler_;
     QDialogButtonBox *buttonBox_;
     QSignalMapper* actionSignalMapper_;

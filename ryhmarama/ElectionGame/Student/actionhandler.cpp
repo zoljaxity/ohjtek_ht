@@ -48,13 +48,29 @@ bool ActionHandler::canSendAgentToLocation(QString locationName) {
         }
     }
     return false;
-/*
-    std::shared_ptr<Agent> nextAgent;
-    if (nextAgent) {
-        location->sendAgent(nextAgent);
-        player->playCard(nextAgent);
+}
+
+bool ActionHandler::canAgentInLocationAct(QString locationName)
+{
+    shared_ptr<Location> location = locations_[locationName];
+}
+
+void ActionHandler::sendAgent(QString locationName)
+{
+    shared_ptr<Location> location = locations_[locationName];
+    shared_ptr<Player> player = game_->currentPlayer();
+
+    foreach (shared_ptr<CardInterface> card, player->cards()) {
+        if (card->typeName() == Options::agentTypeName) {
+            std::shared_ptr<Agent> agent = agents_[card->name()];
+            location->sendAgent(agent);
+            player->playCard(agent);
+            playerAgentLocations_[locationName][player->name()] = agent;
+
+            ui_->setPlayerView(game_->currentPlayer());
+            return;
+        }
     }
-*/
 }
 
 void ActionHandler::createCards() {
@@ -92,6 +108,10 @@ void ActionHandler::initializeLocations() {
         location->initialize();
         game_->addLocation(location);
         locations_[locationInfo.name] = location;
+
+        foreach (shared_ptr<Player> player, players_) {
+            playerAgentLocations_[locationInfo.name][player->name()] = nullptr;
+        }
     }
 }
 

@@ -63,4 +63,9 @@ void Agent::setName(QString name)
     name_ = name;
 }
 
+void Agent::setCanAct(bool canAct)
+{
+    canAct_ = canAct;
+}
+
 

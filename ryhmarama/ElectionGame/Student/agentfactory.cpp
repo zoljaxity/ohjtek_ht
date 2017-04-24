@@ -12,6 +12,7 @@ namespace Interface
     {
         shared_ptr<Agent> agent = make_shared<Agent>();
         agent->setName("Agent " + QString::number(++agentsCreated_));
+        agent->setCanAct(true);
         return agent;
     }
 }

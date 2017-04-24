@@ -26,6 +26,8 @@ public:
     // Called from UI:
     void endTurn();
     bool canSendAgentToLocation(QString locationName);
+    bool canAgentInLocationAct(QString locationName);
+    void sendAgent(QString locationName);
 
 private:
 
@@ -39,6 +41,9 @@ private:
     QVector<shared_ptr<Player>> players_;
     std::map<QString, shared_ptr<Location>> locations_;
     std::map<QString, shared_ptr<Agent>> agents_;
+
+    // Usage: playerAgentLocations_[locationName][playerName] returns agent pointer
+    std::map<QString, std::map<QString, shared_ptr<Agent>>> playerAgentLocations_;
 };
 
 #endif // ACTIONHANDLER_H
