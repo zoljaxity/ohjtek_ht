@@ -33,6 +33,15 @@ void ActionHandler::gameSetup() {
 
 void ActionHandler::endTurn() {
     game_->nextPlayer();
+
+    // New turn - agents can do stuff
+    for(auto const &agent : agents_) {
+        shared_ptr<Interface::Player> cardOwner = agent.second->owner().lock();
+        if (cardOwner == game_->currentPlayer()) {
+            agent.second->setCanAct(true);
+        }
+    }
+
     refreshUI();
 }
 
@@ -85,7 +94,7 @@ void ActionHandler::doRelations()
     std::shared_ptr<Agent> agent = playerAgentLocations_[currentLocation_->name()][player->name()];
 
     if (agent) {
-        locationPlayerRelationsMultiplier_[currentLocation_->name()][player->name()] *= 1.20;
+        locationPlayerRelationsMultiplier_[currentLocation_->name()][player->name()] += 0.4;
         agent->setCanAct(false);
     }
     refreshUI();

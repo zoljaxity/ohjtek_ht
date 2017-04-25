@@ -44,6 +44,7 @@ private:
     shared_ptr<Game> game_;
     MainWindow *ui_;
     QVector<shared_ptr<Location>> locationList_;
+    QVector<shared_ptr<Agent>> agentList_;
     QVector<shared_ptr<Player>> players_;
     std::map<QString, shared_ptr<Location>> locations_;
     std::map<QString, shared_ptr<Agent>> agents_;
