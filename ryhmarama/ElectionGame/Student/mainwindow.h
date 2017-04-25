@@ -44,6 +44,7 @@ private:
     QDialogButtonBox *buttonBox_;
     QSignalMapper* actionSignalMapper_;
     std::map<QString, QPushButton*> dialogButtons_;
+    std::map<QString, QLabel*> locationInfluenceLabels_;
     QString currentLocation_;
 
     // Usage: locationPlayerStats[locationName][playerName] returns stats label

@@ -69,6 +69,7 @@ MainWindow::MainWindow(QWidget *parent) :
     int locationLabelsSet = 0;
     foreach(Options::locationDataUnit location, Options::locations) {
         QLabel *locationLabel = new QLabel(location.name + ": 0");
+        locationInfluenceLabels_[location.name] = locationLabel;
         locationLabel->setStyleSheet("margin-left: 20px;");
         ui->cardGrid->addWidget(
             locationLabel, // Player's influence cards from location
@@ -132,17 +133,37 @@ void MainWindow::setPlayerView(std::shared_ptr<Interface::Player> player,
     std::vector<std::shared_ptr<Interface::Player>> players
 )
 {
+
+    // Update influence labels
+
+    std::map<QString, unsigned short> locationInfluences;
+    foreach (const auto &label, locationInfluenceLabels_) {
+        label.second->setText(label.first + ": 0");
+        locationInfluences[label.first] = 0;
+    }
+
+    // Update agent amount
     int agentAmount = 0;
     foreach (shared_ptr<CardInterface> card, player->cards()) {
         if (card->typeName() == Options::agentTypeName) {
             agentAmount++;
+        } else {
+            std::shared_ptr<Location> location = card->location().lock();
+            if (location) {
+                locationInfluences.at(location->name())++;
+                locationInfluenceLabels_.at(location->name())->setText(
+                    location->name() + ": " + QString::number(locationInfluences[location->name()])
+                );
+            }
         }
     }
     ui->agentsAmount->setText("Agents: " + QString::number(agentAmount));
+
+    // Update current turn label
     ui->currentPlayerLabel->setText("In turn: " + player->name());
 
+    // Update game canvas player statistics
     foreach (shared_ptr<Location> location, locationList) {
-
         foreach (const auto &player, players) {
             QLabel* label = this->locationPlayerStats_[location->name()][player->name()];
             float relationsMultiplier =

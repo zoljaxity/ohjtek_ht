@@ -132,7 +132,6 @@ std::map<QString, bool> ActionHandler::getAvailableActions()
     bool canSendAgent = canSendAgentToLocation();
     bool agentCanAct = canAgentInLocationAct();
     bool canDrawCards = currentLocation_->deck()->canDraw();
-
     return {
         {"setAgent",  canSendAgent},
         {"relations", agentCanAct},
@@ -170,7 +169,6 @@ void ActionHandler::createCards() {
             } else {
                 card = make_shared<Influence>("Influence", location, 1);
             }
-
             location->deck()->addCard(card);
         }
         location->deck()->shuffle();
