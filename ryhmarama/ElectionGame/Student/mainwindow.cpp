@@ -133,9 +133,9 @@ void MainWindow::setActionHandler(ActionHandler *actionHandler)
     actionHandler_ = actionHandler;
 }
 
-void MainWindow::setPlayerView(
-    std::shared_ptr<Interface::Player> player,
-    QVector<shared_ptr<Interface::Location>> locationList
+void MainWindow::setPlayerView(std::shared_ptr<Interface::Player> player,
+    QVector<shared_ptr<Interface::Location>> locationList,
+    std::map<QString, std::map<QString, float>> locationPlayerRelationsMultiplier
 )
 {
     int agentAmount = 0;
@@ -148,9 +148,17 @@ void MainWindow::setPlayerView(
     ui->currentPlayerLabel->setText("In turn: " + player->name());
 
     foreach (shared_ptr<Location> location, locationList) {
+
+        for (int i = 1; i <= Options::playerCount; i++) {
+            QString playerName = "Player " + QString::number(i);
+            QLabel* label = this->locationPlayerStats_[location->name()][playerName];
+            float relationsMultiplier = locationPlayerRelationsMultiplier[location->name()][playerName];
+            label->setText("0 / " + QString::number(relationsMultiplier));
+        }
+
         foreach (shared_ptr<Interface::AgentInterface> agent, location->agents()) {
             QLabel* label = this->locationPlayerStats_[location->name()][agent->owner().lock()->name()];
-            label->setText("0 / 0 agent");
+            label->setText(label->text() + " agent");
         }
     }
 }
@@ -159,10 +167,11 @@ void MainWindow::setPlayerView(
 void MainWindow::onLocationClicked(QString locationName)
 {
     currentLocation_ = locationName;
+    actionHandler_->changeCurrentLocation(currentLocation_);
     disableActionDialogButtons();
-    if (actionHandler_->canSendAgentToLocation(locationName)) {
+    if (actionHandler_->canSendAgentToLocation()) {
         dialogButtons_["setAgent"]->setDisabled(false);
-    } else {
+    } else if (actionHandler_->canAgentInLocationAct()) {
         enableActionButtons();
     }
     buttonBox_->setWindowTitle(locationName);
@@ -174,18 +183,18 @@ void MainWindow::onCommitAction(QString action)
     // Would've used action enum here but signal mapper doesn't
     // support custom types - Also switch case doesn't work on strings
     if (action == "setAgent") {
-        actionHandler_->sendAgent(currentLocation_);
+        actionHandler_->sendAgent();
         dialogButtons_["setAgent"]->setDisabled(true);
         enableActionButtons();
         return;
     } else if (action == "relations") {
-
+        actionHandler_->doRelations();
     } else if (action == "collect") {
-
+        //actionHandler_->doCollect();
     } else if (action == "negotiate") {
-
+        //actionHandler_->doNegotiate();
     } else if (action == "withdraw") {
-
+        //actionHandler_->doWithdraw();
     }
     disableActionDialogButtons();
 }

@@ -25,15 +25,21 @@ public:
 
     // Called from UI:
     void endTurn();
-    bool canSendAgentToLocation(QString locationName);
-    bool canAgentInLocationAct(QString locationName);
-    void sendAgent(QString locationName);
+    bool canSendAgentToLocation();
+    bool canAgentInLocationAct();
+    void sendAgent();
+    void changeCurrentLocation(QString locationName);
+    void doRelations();
+    void doCollect();
+    void doNegotiate();
+    void doWithdraw();
 
 private:
 
     void playerSetup();
     void initializeLocations();
     void createCards();
+    void refreshUI();
 
     shared_ptr<Game> game_;
     MainWindow *ui_;
@@ -41,9 +47,13 @@ private:
     QVector<shared_ptr<Player>> players_;
     std::map<QString, shared_ptr<Location>> locations_;
     std::map<QString, shared_ptr<Agent>> agents_;
+    shared_ptr<Location> currentLocation_;
 
     // Usage: playerAgentLocations_[locationName][playerName] returns agent pointer
     std::map<QString, std::map<QString, shared_ptr<Agent>>> playerAgentLocations_;
+
+    // Usage: playerAgentLocations_[locationName][playerName] returns relations multiplier
+    std::map<QString, std::map<QString, float>> locationPlayerRelationsMultiplier_;
 };
 
 #endif // ACTIONHANDLER_H

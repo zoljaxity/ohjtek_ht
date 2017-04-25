@@ -32,6 +32,7 @@ public:
 
     void setName(QString name);
     void setCanAct(bool canAct);
+    bool canAct();
 
 private:
     bool canAct_;

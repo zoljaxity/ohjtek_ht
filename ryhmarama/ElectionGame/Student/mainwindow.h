@@ -31,7 +31,8 @@ public:
     void setActionHandler(ActionHandler *actionHandler);
     void setPlayerView(
         std::shared_ptr<Interface::Player> player,
-        QVector<shared_ptr<Interface::Location>> locationList
+        QVector<shared_ptr<Interface::Location>> locationList,
+        std::map<QString, std::map<QString, float>> locationPlayerRelationsMultiplier
     );
     ~MainWindow();
 

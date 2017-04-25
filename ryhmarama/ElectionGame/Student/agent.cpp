@@ -68,4 +68,9 @@ void Agent::setCanAct(bool canAct)
     canAct_ = canAct;
 }
 
+bool Agent::canAct()
+{
+    return canAct_;
+}
+
 
