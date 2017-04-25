@@ -100,6 +100,15 @@ void ActionHandler::doRelations()
     refreshUI();
 }
 
+void ActionHandler::doNegotiate()
+{
+    shared_ptr<Player> player = game_->currentPlayer();
+    float multiplier = locationPlayerRelationsMultiplier_
+            [currentLocation_->name()][player->name()];
+    unsigned short newInfluence = currentLocation_->influence(player) + multiplier;
+    currentLocation_->setInfluence(player, newInfluence);
+}
+
 void ActionHandler::createCards() {
     enum cardType { action, influence };
     unsigned locationCount = locationList_.length();

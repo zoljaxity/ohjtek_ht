@@ -192,7 +192,7 @@ void MainWindow::onCommitAction(QString action)
     } else if (action == "collect") {
         //actionHandler_->doCollect();
     } else if (action == "negotiate") {
-        //actionHandler_->doNegotiate();
+        actionHandler_->doNegotiate();
     } else if (action == "withdraw") {
         //actionHandler_->doWithdraw();
     }
