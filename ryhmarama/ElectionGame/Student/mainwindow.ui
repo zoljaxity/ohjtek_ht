@@ -75,7 +75,7 @@
       <x>0</x>
       <y>440</y>
       <width>351</width>
-      <height>111</height>
+      <height>114</height>
      </rect>
     </property>
     <layout class="QGridLayout" name="cardGrid">
@@ -93,7 +93,7 @@
         <bool>false</bool>
        </property>
        <property name="styleSheet">
-        <string notr="true">margin-left: 10px; margin-top: 10px;</string>
+        <string notr="true">margin-left: 10px; margin-top: 25px; margin-bottom: 0px</string>
        </property>
        <property name="text">
         <string>Agents: 0</string>
