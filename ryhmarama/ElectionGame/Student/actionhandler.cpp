@@ -73,13 +73,15 @@ void ActionHandler::sendAgent()
     foreach (shared_ptr<CardInterface> card, player->cards()) {
         if (card->typeName() == Options::agentTypeName) {
             std::shared_ptr<Agent> agent = agents_[card->name()];
-            currentLocation_->sendAgent(agent);
-            currentAgent_ = agent;
-            player->playCard(agent);
-            playerAgentLocations_[currentLocation_->name()][player->name()] = agent;
+            if (agent) {
+                currentLocation_->sendAgent(agent);
+                currentAgent_ = agent;
+                player->playCard(agent);
+                playerAgentLocations_[currentLocation_->name()][player->name()] = agent;
 
-            refreshUI();
-            return;
+                refreshUI();
+                return;
+            }
         }
     }
 }
@@ -106,7 +108,7 @@ void ActionHandler::doCollect()
 {
     if (currentAgent_ && currentLocation_->deck()->canDraw()) {
         std::shared_ptr<CardInterface> card = currentLocation_->deck()->draw();
-        qDebug() << card->typeName() << card->name();
+        game_->currentPlayer()->addCard(card);
         currentAgent_->setCanAct(false);
         refreshUI();
     }
@@ -162,7 +164,9 @@ void ActionHandler::createCards() {
             // we can have varying amounts of agents/influence cards
             // in each deck
             if (Interface::Random::RANDOM.uint(1) == 0) {
-                card = AgentFactory::AGENTFACTORY.createAgent();
+                shared_ptr<Agent> agent = AgentFactory::AGENTFACTORY.createAgent();
+                card = agent;
+                agents_[agent->name()] = agent;
             } else {
                 card = make_shared<Influence>("Influence", location, 1);
             }
