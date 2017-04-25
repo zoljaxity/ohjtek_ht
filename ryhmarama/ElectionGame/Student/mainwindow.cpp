@@ -114,17 +114,10 @@ void MainWindow::initializeActionDialog()
     buttonBox_->setWindowFlags( Qt::CustomizeWindowHint | Qt::WindowCloseButtonHint );
 }
 
-void MainWindow::disableActionDialogButtons()
+void MainWindow::refreshButtonOptions()
 {
-    foreach (QString buttonName, Options::agentButtons) {
-        dialogButtons_[buttonName]->setDisabled(true);
-    }
-}
-
-void MainWindow::enableActionButtons()
-{
-    foreach (QString buttonName, Options::agentActionButtons) {
-        dialogButtons_[buttonName]->setDisabled(false);
+    for(auto const &action : actionHandler_->getAvailableActions()) {
+        dialogButtons_[action.first]->setDisabled(!action.second);
     }
 }
 
@@ -154,7 +147,6 @@ void MainWindow::setPlayerView(std::shared_ptr<Interface::Player> player,
             QLabel* label = this->locationPlayerStats_[location->name()][player->name()];
             float relationsMultiplier =
                 locationPlayerRelationsMultiplier[location->name()][player->name()];
-            qDebug() << "Doddih" << location->influence(player) << location->name() << player->name();
             label->setText(
                 QString::number(location->influence(player))
                 + " / " + QString::number(relationsMultiplier)
@@ -173,12 +165,7 @@ void MainWindow::onLocationClicked(QString locationName)
 {
     currentLocation_ = locationName;
     actionHandler_->changeCurrentLocation(currentLocation_);
-    disableActionDialogButtons();
-    if (actionHandler_->canSendAgentToLocation()) {
-        dialogButtons_["setAgent"]->setDisabled(false);
-    } else if (actionHandler_->canAgentInLocationAct()) {
-        enableActionButtons();
-    }
+    refreshButtonOptions();
     buttonBox_->setWindowTitle(locationName);
     buttonBox_->show();
 }
@@ -189,19 +176,16 @@ void MainWindow::onCommitAction(QString action)
     // support custom types - Also switch case doesn't work on strings
     if (action == "setAgent") {
         actionHandler_->sendAgent();
-        dialogButtons_["setAgent"]->setDisabled(true);
-        enableActionButtons();
-        return;
     } else if (action == "relations") {
         actionHandler_->doRelations();
     } else if (action == "collect") {
-        //actionHandler_->doCollect();
+        actionHandler_->doCollect();
     } else if (action == "negotiate") {
         actionHandler_->doNegotiate();
     } else if (action == "withdraw") {
         //actionHandler_->doWithdraw();
     }
-    disableActionDialogButtons();
+    refreshButtonOptions();
 }
 
 void MainWindow::closeDialog() {

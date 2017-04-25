@@ -100,6 +100,14 @@ void ActionHandler::doRelations()
     refreshUI();
 }
 
+void ActionHandler::doCollect()
+{
+    if (currentLocation_->deck()->canDraw()) {
+        std::shared_ptr<CardInterface> card = currentLocation_->deck()->draw();
+        qDebug() << card->typeName() << card->name();
+    }
+}
+
 void ActionHandler::doNegotiate()
 {
     shared_ptr<Player> player = game_->currentPlayer();
@@ -110,32 +118,51 @@ void ActionHandler::doNegotiate()
     refreshUI();
 }
 
+std::map<QString, bool> ActionHandler::getAvailableActions()
+{
+    bool canSendAgent = canSendAgentToLocation();
+    bool agentCanAct = canAgentInLocationAct();
+    bool canDrawCards = currentLocation_->deck()->canDraw();
+
+    return {
+        {"setAgent",  canSendAgent},
+        {"relations", agentCanAct},
+        {"collect",   agentCanAct && canDrawCards},
+        {"negotiate", agentCanAct},
+        {"withdraw",  agentCanAct}
+    };
+}
+
 void ActionHandler::createCards() {
     enum cardType { action, influence };
     unsigned locationCount = locationList_.length();
 
-    // Ten cards per location
-    for (unsigned i = 0; i < locationCount * 10; i++) {
-
-        shared_ptr<Location> location = locationList_.at(i / 10);
-        shared_ptr<Interface::CardInterface> card;
-
-        // Shuffle all the cards in the game now so that
-        // we can have varying amounts of agents/influence cards
-        // in each deck
-        if (Interface::Random::RANDOM.uint(1) == 0) {
-            card = make_shared<Agent>();
-        } else {
-            card = make_shared<Influence>("Influence", location, 1);
-        }
-
-        location->deck()->addCard(card);
-    }
-
+    // Initial agents to the hand cards - one per player
     for (int i = 0; i < players_.length(); i++) {
         shared_ptr<Agent> agent = AgentFactory::AGENTFACTORY.createAgent();
         agents_[agent->name()] = agent;
         players_.at(i)->addCard(agent);
+    }
+
+    // Ten cards per location
+    for (unsigned i = 0; i < locationCount; i++) {
+
+        shared_ptr<Location> location = locationList_.at(i);
+        for (unsigned a = 0; a < 10; a++) {
+            shared_ptr<Interface::CardInterface> card;
+
+            // Shuffle all the cards in the game now so that
+            // we can have varying amounts of agents/influence cards
+            // in each deck
+            if (Interface::Random::RANDOM.uint(1) == 0) {
+                card = AgentFactory::AGENTFACTORY.createAgent();
+            } else {
+                card = make_shared<Influence>("Influence", location, 1);
+            }
+
+            location->deck()->addCard(card);
+        }
+        location->deck()->shuffle();
     }
 }
 

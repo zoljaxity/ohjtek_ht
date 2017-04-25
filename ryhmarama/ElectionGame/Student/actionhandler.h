@@ -24,22 +24,26 @@ public:
     void gameSetup();
 
     // Called from UI:
-    void endTurn();
-    bool canSendAgentToLocation();
-    bool canAgentInLocationAct();
-    void sendAgent();
     void changeCurrentLocation(QString locationName);
+    std::map<QString, bool> getAvailableActions();
+    void sendAgent();
     void doRelations();
     void doCollect();
     void doNegotiate();
     void doWithdraw();
+    void endTurn();
 
 private:
 
+    // Game setup
     void playerSetup();
     void initializeLocations();
     void createCards();
+
+    // UI related
     void refreshUI();
+    bool canSendAgentToLocation();
+    bool canAgentInLocationAct();
 
     shared_ptr<Game> game_;
     MainWindow *ui_;
