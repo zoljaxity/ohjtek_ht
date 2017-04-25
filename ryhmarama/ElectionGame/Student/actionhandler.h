@@ -53,6 +53,7 @@ private:
     std::map<QString, shared_ptr<Location>> locations_;
     std::map<QString, shared_ptr<Agent>> agents_;
     shared_ptr<Location> currentLocation_;
+    shared_ptr<Agent> currentAgent_;
 
     // Usage: playerAgentLocations_[locationName][playerName] returns agent pointer
     std::map<QString, std::map<QString, shared_ptr<Agent>>> playerAgentLocations_;

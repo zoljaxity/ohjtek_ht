@@ -74,6 +74,7 @@ void ActionHandler::sendAgent()
         if (card->typeName() == Options::agentTypeName) {
             std::shared_ptr<Agent> agent = agents_[card->name()];
             currentLocation_->sendAgent(agent);
+            currentAgent_ = agent;
             player->playCard(agent);
             playerAgentLocations_[currentLocation_->name()][player->name()] = agent;
 
@@ -86,36 +87,42 @@ void ActionHandler::sendAgent()
 void ActionHandler::changeCurrentLocation(QString locationName)
 {
     currentLocation_ = locations_[locationName];
+    QString playerName = game_->currentPlayer()->name();
+    currentAgent_ = playerAgentLocations_[locationName][playerName];
 }
 
 void ActionHandler::doRelations()
 {
     shared_ptr<Player> player = game_->currentPlayer();
-    std::shared_ptr<Agent> agent = playerAgentLocations_[currentLocation_->name()][player->name()];
 
-    if (agent) {
+    if (currentAgent_) {
         locationPlayerRelationsMultiplier_[currentLocation_->name()][player->name()] += 0.4;
-        agent->setCanAct(false);
+        currentAgent_->setCanAct(false);
     }
     refreshUI();
 }
 
 void ActionHandler::doCollect()
 {
-    if (currentLocation_->deck()->canDraw()) {
+    if (currentAgent_ && currentLocation_->deck()->canDraw()) {
         std::shared_ptr<CardInterface> card = currentLocation_->deck()->draw();
         qDebug() << card->typeName() << card->name();
+        currentAgent_->setCanAct(false);
+        refreshUI();
     }
 }
 
 void ActionHandler::doNegotiate()
 {
-    shared_ptr<Player> player = game_->currentPlayer();
-    float multiplier = locationPlayerRelationsMultiplier_
-            [currentLocation_->name()][player->name()];
-    unsigned short newInfluence = currentLocation_->influence(player) + multiplier;
-    currentLocation_->setInfluence(player, newInfluence);
-    refreshUI();
+    if (currentAgent_) {
+        shared_ptr<Player> player = game_->currentPlayer();
+        float multiplier = locationPlayerRelationsMultiplier_
+                [currentLocation_->name()][player->name()];
+        unsigned short newInfluence = currentLocation_->influence(player) + multiplier;
+        currentLocation_->setInfluence(player, newInfluence);
+        currentAgent_->setCanAct(false);
+        refreshUI();
+    }
 }
 
 std::map<QString, bool> ActionHandler::getAvailableActions()
