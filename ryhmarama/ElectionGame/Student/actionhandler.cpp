@@ -107,6 +107,7 @@ void ActionHandler::doNegotiate()
             [currentLocation_->name()][player->name()];
     unsigned short newInfluence = currentLocation_->influence(player) + multiplier;
     currentLocation_->setInfluence(player, newInfluence);
+    refreshUI();
 }
 
 void ActionHandler::createCards() {
@@ -143,7 +144,9 @@ void ActionHandler::refreshUI()
     ui_->setPlayerView(
         game_->currentPlayer(),
         locationList_,
-        locationPlayerRelationsMultiplier_);
+        locationPlayerRelationsMultiplier_,
+        game_->players()
+    );
 }
 
 void ActionHandler::initializeLocations() {

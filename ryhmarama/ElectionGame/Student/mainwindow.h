@@ -32,7 +32,8 @@ public:
     void setPlayerView(
         std::shared_ptr<Interface::Player> player,
         QVector<shared_ptr<Interface::Location>> locationList,
-        std::map<QString, std::map<QString, float>> locationPlayerRelationsMultiplier
+        std::map<QString, std::map<QString, float>> locationPlayerRelationsMultiplier,
+        std::vector<std::shared_ptr<Interface::Player>> players
     );
     ~MainWindow();
 

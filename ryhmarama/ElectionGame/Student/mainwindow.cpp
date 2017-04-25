@@ -135,7 +135,8 @@ void MainWindow::setActionHandler(ActionHandler *actionHandler)
 
 void MainWindow::setPlayerView(std::shared_ptr<Interface::Player> player,
     QVector<shared_ptr<Interface::Location>> locationList,
-    std::map<QString, std::map<QString, float>> locationPlayerRelationsMultiplier
+    std::map<QString, std::map<QString, float>> locationPlayerRelationsMultiplier,
+    std::vector<std::shared_ptr<Interface::Player>> players
 )
 {
     int agentAmount = 0;
@@ -149,11 +150,15 @@ void MainWindow::setPlayerView(std::shared_ptr<Interface::Player> player,
 
     foreach (shared_ptr<Location> location, locationList) {
 
-        for (int i = 1; i <= Options::playerCount; i++) {
-            QString playerName = "Player " + QString::number(i);
-            QLabel* label = this->locationPlayerStats_[location->name()][playerName];
-            float relationsMultiplier = locationPlayerRelationsMultiplier[location->name()][playerName];
-            label->setText("0 / " + QString::number(relationsMultiplier));
+        foreach (const auto &player, players) {
+            QLabel* label = this->locationPlayerStats_[location->name()][player->name()];
+            float relationsMultiplier =
+                locationPlayerRelationsMultiplier[location->name()][player->name()];
+            qDebug() << "Doddih" << location->influence(player) << location->name() << player->name();
+            label->setText(
+                QString::number(location->influence(player))
+                + " / " + QString::number(relationsMultiplier)
+            );
         }
 
         foreach (shared_ptr<Interface::AgentInterface> agent, location->agents()) {
