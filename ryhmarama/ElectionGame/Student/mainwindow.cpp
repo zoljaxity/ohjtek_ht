@@ -5,6 +5,8 @@
 #include <QIcon>
 #include <QDebug>
 #include <QGridLayout>
+#include <QWidget>
+#include <QGridLayout>
 #include <QSpacerItem>
 #include <QSignalMapper>
 
@@ -134,20 +136,21 @@ void MainWindow::setPlayerView(std::shared_ptr<Interface::Player> player,
 )
 {
 
-    // Update influence labels
-
+    // Reset influence cards to zero
     std::map<QString, unsigned short> locationInfluences;
     foreach (const auto &label, locationInfluenceLabels_) {
         label.second->setText(label.first + ": 0");
         locationInfluences[label.first] = 0;
     }
 
-    // Update agent amount
+    // Loop player's hand cards
     int agentAmount = 0;
     foreach (shared_ptr<CardInterface> card, player->cards()) {
         if (card->typeName() == Options::agentTypeName) {
+            // If hand card is an agent card, increase agent amount
             agentAmount++;
         } else {
+            // Otherwise increase influence card amount in respective location
             std::shared_ptr<Location> location = card->location().lock();
             if (location) {
                 locationInfluences.at(location->name())++;
@@ -179,6 +182,64 @@ void MainWindow::setPlayerView(std::shared_ptr<Interface::Player> player,
             label->setText(label->text() + " agent");
         }
     }
+}
+
+void MainWindow::endGame(ElectionResult *result)
+{
+    QVector<Options::electionResultRow> statRows = result->getStatRows();
+
+    QWidget *endGameWindow = new QWidget;
+    QGridLayout *statsGrid = new QGridLayout;
+
+    Options::electionResultRow nameRow = statRows.at(0);
+
+    short iName = 1;
+    foreach (const auto names, nameRow.stats) {
+        QLabel *nameLabel = new QLabel(names.first);
+        nameLabel->setAlignment(Qt::AlignCenter);
+        nameLabel->setStyleSheet("QLabel { font-weight: bold; }");
+        statsGrid->addWidget(nameLabel, 0, iName++);
+    }
+    QLabel *localWinnerLabel = new QLabel("Votes for");
+    localWinnerLabel->setStyleSheet(
+        "QLabel { margin-left: 10px; font-weight: bold; font-size: 14px; color: #ff3300;}"
+    );
+    statsGrid->addWidget(localWinnerLabel, 0, iName++);
+
+    foreach (Options::electionResultRow row, statRows) {
+        QLabel *location = new QLabel(row.locationName);
+        statsGrid->addWidget(location);
+
+        foreach (const auto &statistics, row.stats) {
+            Options::influenceStats stats = statistics.second;
+            QLabel *statsLabel = new QLabel(
+                QString::number(stats.influenceCards) + " * " +
+                QString::number(stats.influencePoints) + " = " +
+                QString::number(stats.influenceTotal)
+            );
+            statsLabel->setStyleSheet("QLabel { margin: 10px; }");
+            statsGrid->addWidget(statsLabel);
+        }
+
+        QLabel *winnerLabel = new QLabel(row.electionWinner);
+        winnerLabel->setAlignment(Qt::AlignCenter);
+        if (row.electionWinner.length() == 0) {
+            winnerLabel->setText("Tie!");
+        } else {
+            winnerLabel->setStyleSheet("QLabel { font-weight: bold; }");
+        }
+        statsGrid->addWidget(winnerLabel);
+    }
+
+
+    endGameWindow->setLayout(statsGrid);
+
+    // Dialog window settings
+    endGameWindow->setWindowIcon(QIcon(":/Resources/areaicon.png"));
+    endGameWindow->setWindowFlags( Qt::CustomizeWindowHint | Qt::WindowCloseButtonHint );
+
+    endGameWindow->show();
+    this->close();
 }
 
 

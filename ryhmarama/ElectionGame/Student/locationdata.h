@@ -21,11 +21,24 @@ namespace Options {
           buttonCol(buttonCol) {}
     };
 
+    struct influenceStats {
+        unsigned short influencePoints;
+        unsigned short influenceCards;
+        unsigned short influenceTotal;
+    };
+
+    struct electionResultRow {
+        QString locationName;
+        std::map<QString, influenceStats> stats;
+        QString electionWinner;
+    };
+
     // The game canvas resolution
     const int canvasColumnCount = 200;
     const int canvasRownCount = 200;
 
-    const int playerCount = 4;
+    const int playerCount = 2;
+    const int gameRounds = 10;
     const QString agentTypeName = "Agent";
     const QVector<QString> agentButtons = {
         "setAgent", "relations", "collect", "negotiate", "withdraw"

@@ -47,6 +47,8 @@ private:
 
     shared_ptr<Game> game_;
     MainWindow *ui_;
+    unsigned short maxRounds_;
+    unsigned short currentRound_;
     QVector<shared_ptr<Location>> locationList_;
     QVector<shared_ptr<Agent>> agentList_;
     QVector<shared_ptr<Player>> players_;

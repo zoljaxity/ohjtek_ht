@@ -29,14 +29,16 @@ SOURCES +=\
     agent.cpp \
     mainwindow.cpp \
     actionhandler.cpp \
-    agentfactory.cpp
+    agentfactory.cpp \
+    electionresult.cpp
 
 HEADERS  += \
     agent.h \
     mainwindow.h \
     actionhandler.h \
     locationdata.h \
-    agentfactory.h
+    agentfactory.h \
+    electionresult.h
 
 unix {
     target.path = /usr/lib

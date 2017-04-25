@@ -12,6 +12,7 @@
 #include "locationdata.h"
 #include "location.h"
 #include "player.h"
+#include "electionresult.h"
 
 using Interface::CardInterface;
 using std::shared_ptr;
@@ -35,6 +36,7 @@ public:
         std::map<QString, std::map<QString, float>> locationPlayerRelationsMultiplier,
         std::vector<std::shared_ptr<Interface::Player>> players
     );
+    void endGame(ElectionResult *result);
     ~MainWindow();
 
 private:
