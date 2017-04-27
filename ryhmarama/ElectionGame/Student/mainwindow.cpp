@@ -274,7 +274,7 @@ void MainWindow::onCommitAction(QString action)
     } else if (action == "negotiate") {
         actionHandler_->doNegotiate();
     } else if (action == "withdraw") {
-        //actionHandler_->doWithdraw();
+        actionHandler_->doWithdraw();
     }
     refreshButtonOptions();
 }

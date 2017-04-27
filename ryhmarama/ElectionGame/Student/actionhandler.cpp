@@ -140,6 +140,19 @@ void ActionHandler::doNegotiate()
     }
 }
 
+void ActionHandler::doWithdraw()
+{
+    if (currentAgent_) {
+        shared_ptr<Player> player = game_->currentPlayer();
+        player->addCard(currentAgent_);
+        currentLocation_->removeAgent(currentAgent_);
+        auto agentIterator = playerAgentLocations_[currentLocation_->name()].find(player->name());
+        playerAgentLocations_[currentLocation_->name()].erase(agentIterator);
+        currentAgent_->setCanAct(false);
+        refreshUI();
+    }
+}
+
 std::map<QString, bool> ActionHandler::getAvailableActions()
 {
     bool canSendAgent = canSendAgentToLocation();
