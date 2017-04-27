@@ -33,7 +33,6 @@ void ElectionResult::calculateWinner(shared_ptr<Interface::Game> *game)
     }
 
     foreach (std::shared_ptr<Location> location, (*game)->locations()) {
-        qDebug() << location->name();
         shared_ptr<Player> winner;
         unsigned short winningPoints = 0;
         Options::electionResultRow resultRow;

@@ -37,7 +37,7 @@ namespace Options {
     const int canvasColumnCount = 200;
     const int canvasRownCount = 200;
 
-    const int playerCount = 2;
+    const int playerCount = 4;
     const int gameRounds = 10;
     const QString agentTypeName = "Agent";
     const QVector<QString> agentButtons = {

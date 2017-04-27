@@ -36,7 +36,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Lopeta peli</string>
+     <string>End game</string>
     </property>
    </widget>
    <widget class="QWidget" name="gridWidget" native="true">
@@ -127,7 +127,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Vuorossa:</string>
+     <string>In turn:</string>
     </property>
    </widget>
    <widget class="QPushButton" name="endTurnButton">
@@ -140,7 +140,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Päätä vuoro</string>
+     <string>End turn</string>
     </property>
    </widget>
   </widget>

@@ -202,7 +202,7 @@ void MainWindow::endGame(ElectionResult *result)
     }
     QLabel *localWinnerLabel = new QLabel("Votes for");
     localWinnerLabel->setStyleSheet(
-        "QLabel { margin-left: 10px; font-weight: bold; font-size: 14px; color: #ff3300;}"
+        "QLabel {margin-left: 10px; font-weight: bold; font-size: 14px; color: #ff3300;}"
     );
     statsGrid->addWidget(localWinnerLabel, 0, iName++);
 
@@ -237,6 +237,15 @@ void MainWindow::endGame(ElectionResult *result)
     // Dialog window settings
     endGameWindow->setWindowIcon(QIcon(":/Resources/areaicon.png"));
     endGameWindow->setWindowFlags( Qt::CustomizeWindowHint | Qt::WindowCloseButtonHint );
+
+
+    QLabel *winnerLabel = new QLabel("Election was a tie!");
+    if (!result->isTie()) {
+        winnerLabel->setText(result->getWinner() + " was elected!");
+    }
+    winnerLabel->setAlignment(Qt::AlignCenter);
+    winnerLabel->setStyleSheet("QLabel { font-weight: bold; font-size: 18px; padding: 20px; }");
+    statsGrid->addWidget(winnerLabel, Options::locations.length()+1, 0, 1, Options::playerCount+2);
 
     endGameWindow->show();
     this->close();

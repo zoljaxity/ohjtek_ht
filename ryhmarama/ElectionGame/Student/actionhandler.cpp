@@ -39,47 +39,12 @@ void ActionHandler::endTurn() {
     game_->nextPlayer();
     currentRound_++;
 
+    // Run out of turns, game over
     if (currentRound_ > maxRounds_) {
-        qDebug() << "Peli päättyi!";
         ElectionResult *result = new ElectionResult();
         result->calculateWinner(&game_);
         ui_->endGame(result);
         return;
-
-        std::map<QString, std::map<QString, unsigned>> influenceCards;
-        foreach (shared_ptr<Player> player, game_->players()) {
-
-            // Initialize influence card amount to zero
-            foreach (const auto &locationData, locations_) {
-                influenceCards[locationData.second->name()][player->name()] = 0;
-            }
-            // Then count them
-            foreach (shared_ptr<CardInterface> card, player->cards()) {
-                if (card->typeName() == "Influence") {
-                    influenceCards[card->location().lock()->name()][player->name()]++;
-                }
-            }
-        }
-
-        foreach (const auto locationData, locations_) {
-            shared_ptr<Location> location = locationData.second;
-            qDebug() << location->name();
-            shared_ptr<Player> winner;
-            unsigned short winningPoints = 0;
-            foreach (shared_ptr<Player> player, game_->players()) {
-                unsigned short influence = location->influence(player);
-                unsigned short influenceCardAmount = influenceCards[location->name()][player->name()];
-                unsigned short influenceTotal = influence * influenceCardAmount;
-                if (influenceTotal > winningPoints) {
-                    winner = player;
-                }
-                qDebug() << " - " << player->name() << ": "
-                         << influence << " * " << influenceCardAmount
-                         << " = " << influenceTotal;
-            }
-            qDebug() << " - winner:" << winner->name();
-        }
-        this->ui_->close();
     }
 
     // New turn - agents can do stuff
