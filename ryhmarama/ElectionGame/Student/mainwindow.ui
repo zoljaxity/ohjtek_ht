@@ -121,7 +121,7 @@
     <property name="geometry">
      <rect>
       <x>600</x>
-      <y>490</y>
+      <y>480</y>
       <width>191</width>
       <height>21</height>
      </rect>
@@ -141,6 +141,19 @@
     </property>
     <property name="text">
      <string>End turn</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="currentTurnLabel">
+    <property name="geometry">
+     <rect>
+      <x>600</x>
+      <y>500</y>
+      <width>191</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Current turn: 1 / 10</string>
     </property>
    </widget>
   </widget>

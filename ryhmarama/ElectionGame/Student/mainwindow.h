@@ -36,12 +36,15 @@ public:
         std::map<QString, std::map<QString, float>> locationPlayerRelationsMultiplier,
         std::vector<std::shared_ptr<Interface::Player>> players
     );
+    void setTurn(int turn);
     void endGame(ElectionResult *result);
     ~MainWindow();
 
 private:
     void initializeActionDialog();
+    void setLeftCornerLegends();
     void refreshButtonOptions();
+    QString getPlayerColor(unsigned short playerIndex);
     ActionHandler *actionHandler_;
     QDialogButtonBox *buttonBox_;
     QSignalMapper* actionSignalMapper_;

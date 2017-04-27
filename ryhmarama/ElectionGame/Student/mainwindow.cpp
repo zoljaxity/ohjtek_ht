@@ -27,37 +27,17 @@ MainWindow::MainWindow(QWidget *parent) :
     QSignalMapper* signalMapper = new QSignalMapper(this);
     foreach(Options::locationDataUnit location, Options::locations) {
         QPushButton *button = new QPushButton(location.name);
-        ui->gridLayout->addWidget(button, location.buttonRow, location.buttonCol, 10, 30);
+        ui->gridLayout->addWidget(button, location.buttonRow, location.buttonCol-2, 10, 34);
         connect(button, SIGNAL(clicked()), signalMapper, SLOT(map()));
         signalMapper->setMapping(button, location.name);
 
         for (int i = 0; i < Options::playerCount; i++) {
-            QString playerColour;
-            switch (i) {
-            case 1:
-                playerColour = "#99ff33";
-                break;
-            case 2:
-                playerColour = "yellow";
-                break;
-            case 3:
-                playerColour = "cyan";
-                break;
-            default:
-                playerColour = "white";
-                break;
-            }
             QLabel *stats = new QLabel("0 / 0");
             stats->setAlignment(Qt::AlignCenter);
-            stats->setStyleSheet("QLabel { font-size: 10px; font-weight: bold; background-color: rgba(0,0,0,0.7); border-radius: 5px; color: " + playerColour + "; }");
+            stats->setStyleSheet("QLabel { font-size: 10px; font-weight: bold; background-color: rgba(0,0,0,0.7); border-radius: 5px; color: " + getPlayerColor(i) + "; }");
             ui->gridLayout->addWidget(stats,location.buttonRow + 11 + 8*i, location.buttonCol, 7, 30);
 
-            QLabel *playerName = new QLabel("Player " + QString::number(i+1));
-            playerName->setStyleSheet("QLabel { font-size: 15px; font-weight: bold; background-color: rgba(0,0,0,0.0); border-radius: 5px; color: " + playerColour + "; }");
-            ui->gridLayout->addWidget(playerName, 11 + 8*i, 2, 7, 70);
-
-            // TODO: fix this and get player names from some actual place
-            locationPlayerStats_[location.name][playerName->text()] = stats;
+            locationPlayerStats_[location.name][Options::playerNames.at(i)] = stats;
         }
     }
     connect(signalMapper, SIGNAL(mapped(QString)), this, SLOT(onLocationClicked(QString)));
@@ -72,7 +52,7 @@ MainWindow::MainWindow(QWidget *parent) :
     foreach(Options::locationDataUnit location, Options::locations) {
         QLabel *locationLabel = new QLabel(location.name + ": 0");
         locationInfluenceLabels_[location.name] = locationLabel;
-        locationLabel->setStyleSheet("margin-left: 20px;");
+        locationLabel->setStyleSheet("margin-left: 5px;");
         ui->cardGrid->addWidget(
             locationLabel, // Player's influence cards from location
             1 + locationLabelsSet % 3, // Rows of three
@@ -81,6 +61,7 @@ MainWindow::MainWindow(QWidget *parent) :
         ++locationLabelsSet;
     }
 
+    setLeftCornerLegends();
     initializeActionDialog();
 }
 
@@ -117,11 +98,40 @@ void MainWindow::initializeActionDialog()
     buttonBox_->setWindowFlags( Qt::CustomizeWindowHint | Qt::WindowCloseButtonHint );
 }
 
+void MainWindow::setLeftCornerLegends()
+{
+    for (int i = 0; i < Options::playerCount; i++) {
+        QLabel *playerName = new QLabel(Options::playerNames.at(i));
+        playerName->setStyleSheet("QLabel { font-size: 15px; font-weight: bold; background-color: rgba(0,0,0,0.0); border-radius: 5px; color: " + getPlayerColor(i) + "; }");
+        ui->gridLayout->addWidget(playerName, 11 + 8*i, 2, 7, 50);
+    }
+}
+
 void MainWindow::refreshButtonOptions()
 {
     for(auto const &action : actionHandler_->getAvailableActions()) {
         dialogButtons_[action.first]->setDisabled(!action.second);
     }
+}
+
+QString MainWindow::getPlayerColor(unsigned short playerIndex)
+{
+    QString playerColour;
+    switch (playerIndex) {
+    case 1:
+        playerColour = "#99ff33";
+        break;
+    case 2:
+        playerColour = "yellow";
+        break;
+    case 3:
+        playerColour = "cyan";
+        break;
+    default:
+        playerColour = "white";
+        break;
+    }
+    return playerColour;
 }
 
 void MainWindow::setActionHandler(ActionHandler *actionHandler)
@@ -182,6 +192,11 @@ void MainWindow::setPlayerView(std::shared_ptr<Interface::Player> player,
             label->setText(label->text() + " agent");
         }
     }
+}
+
+void MainWindow::setTurn(int turn)
+{
+    ui->currentTurnLabel->setText("Current turn: " + QString::number(turn) + " / 10");
 }
 
 void MainWindow::endGame(ElectionResult *result)

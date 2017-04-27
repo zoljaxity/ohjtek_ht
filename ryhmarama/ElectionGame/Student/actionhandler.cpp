@@ -37,6 +37,7 @@ void ActionHandler::gameSetup() {
 
 void ActionHandler::endTurn() {
     game_->nextPlayer();
+    ui_->setTurn(currentRound_ / Options::playerCount + 1);
     currentRound_++;
 
     // Run out of turns, game over
@@ -229,6 +230,6 @@ void ActionHandler::initializeLocations() {
 // set up players
 void ActionHandler::playerSetup() {
     for (int i = 0; i < Options::playerCount; i++) {
-        players_.push_back(game_->addPlayer("Player " + QString::number(i+1)));
+        players_.push_back(game_->addPlayer(Options::playerNames.at(i)));
     }
 }
